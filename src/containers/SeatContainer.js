@@ -4,10 +4,11 @@ import { selectSeat } from '../actions';
 
 const mapStateToProps = state => ({
     seats: state.seats,
+    selectedSeat: state.selectedSeat,
 });
 
 const mapDispatchToProps = ({
-    onSeatClick: selectSeat,
+    onSeatSelect: selectSeat,
 });
 
 const SeatContainer = connect(

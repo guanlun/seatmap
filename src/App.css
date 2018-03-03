@@ -1,3 +1,11 @@
 .App {
   text-align: center;
 }
+
+.seat {
+  background: red;
+}
+
+.seat.selected {
+  background: green;
+}
