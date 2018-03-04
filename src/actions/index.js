@@ -12,3 +12,8 @@ export const setSeatData = seatData => ({
     type: 'SET_SEAT_DATA',
     data: seatData,
 });
+
+export const addStudent = student => ({
+    type: 'ADD_STUDENT',
+    data: student,
+});

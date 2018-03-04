@@ -1,7 +1,9 @@
 const express = require('express');
+const WebSocket = require('ws');
 const MongoClient = require('mongodb').MongoClient;
 
 const app = express();
+const ws = new WebSocket.Server({ port: 3002 });
 
 const dummyNames = [
     'Fabian Button',
@@ -26,6 +28,22 @@ const dummyNames = [
     'Despina Zollinger',
 ];
 
+function randArrayOfValues(length, values) {
+    const arr = [];
+    const vCount = values.length;
+    for (let i = 0; i < length; i++) {
+        arr.push(values[Math.floor(Math.random() * vCount)]);
+    }
+
+    return arr;
+}
+
+function generateRandomStudentPerformance() {
+    return {
+        attendance: randArrayOfValues(10, [true, false]),
+    }
+}
+
 const seats = [];
 let seatIdx = 0;
 for (let x = 0; x < 5; x++) {
@@ -41,16 +59,26 @@ for (let x = 0; x < 5; x++) {
     }
 }
 
-const students = [];
-let studentIdx = 0;
-for (const seat of seats) {
-    students.push({
-        id: studentIdx,
-        name: dummyNames[studentIdx],
-        seat,
-    });
+let studentGeneratorInterval = null;
 
-    studentIdx++;
+let students = [];
+
+function generateStudent(ws) {
+    if (students.length === seats.length) {
+        clearInterval(studentGeneratorInterval);
+        return;
+    }
+
+    const student = {
+        id: students.length,
+        name: dummyNames[students.length],
+        seatId: seats[students.length].id,
+        performance: generateRandomStudentPerformance(),
+    };
+
+    students.push(student);
+
+    ws.send(JSON.stringify(student));
 }
 
 // MongoClient.connect('mongodb://localhost:27017/', (err, db) => {
@@ -71,3 +99,20 @@ app.get('/students/', (req, res) => {
 });
 
 app.listen(3001, () => console.log('Example app listening on port 3001!'));
+
+ws.on('connection', socket => {
+    console.log('connected!!!');
+
+    students = [];
+    studentGeneratorInterval = setInterval(() => generateStudent(socket), 500);
+
+    socket.on('close', () => {
+        console.log('websocket closed');
+    });
+
+    socket.on('error', () => {
+        students = [];
+        clearInterval(studentGeneratorInterval);
+        console.log('websocket error');
+    });
+});

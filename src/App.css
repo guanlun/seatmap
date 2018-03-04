@@ -21,6 +21,10 @@
     cursor: default;
 }
 
+.seat.empty {
+    background: #eee;
+}
+
 .seat:hover {
     background: #999;
 }
@@ -29,13 +33,13 @@
     display: none;
 }
 
-.seat:hover .default {
+/* .seat:hover .default {
     display: none;
 }
 
 .seat:hover .hovered {
     display: block;
-}
+} */
 
 .seat.selected {
     background: green;
@@ -56,4 +60,23 @@
 }
 
 .student-info-charts {
+}
+
+.attendance-list {
+    display: flex;
+    justify-content: center;
+}
+
+.attendance-item {
+    width: 20px;
+    height: 20px;
+    margin: 1px;
+}
+
+.attendance-item.attended {
+    background: green;
+}
+
+.attendance-item.absent {
+    background: red;
 }

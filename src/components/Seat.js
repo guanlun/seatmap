@@ -6,6 +6,10 @@ const Seat = ({ seatSpec, seatedStudent, isSelected, onSelect }) => {
         classNames.push('selected');
     }
 
+    if (!seatedStudent) {
+        classNames.push('empty');
+    }
+
     const elStyle = {
         left: seatSpec.position.x,
         top: seatSpec.position.y,
@@ -18,7 +22,7 @@ const Seat = ({ seatSpec, seatedStudent, isSelected, onSelect }) => {
                     <div className='default'>{seatedStudent.name}</div>
                     <div className='hovered'>{seatSpec.perf}</div> 
                 </div>:
-                <div>empty</div>
+                null
             }
         </div>
     );

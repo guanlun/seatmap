@@ -24,13 +24,15 @@ export default class StudentInfoCharts extends React.Component {
             
         this.chart.plotArea = this.chart.append("g")
             .attr('transform', 'translate(' + (CHART_WIDTH / 2) +  ',' + (CHART_HEIGHT / 2) + ')');
+    }
 
+    componentWillReceiveProps(nextProps) {
         const arc = d3.arc()
             .innerRadius(0)
             .outerRadius(CHART_RADIUS);
 
         const pie = d3.pie()
-            .value(function(d) { return d.count; })
+            .value(d => d.count)
             .sort(null);
 
         const path = this.chart.plotArea.selectAll('path')
@@ -38,9 +40,7 @@ export default class StudentInfoCharts extends React.Component {
             .enter()
             .append('path')
             .attr('d', arc)
-            .attr('fill', function(d, i) {
-              return color(d.data.label);
-            });
+            .attr('fill', (d, i) => color(d.data.label));
     }
 
     render() {

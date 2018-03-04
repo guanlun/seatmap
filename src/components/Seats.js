@@ -4,10 +4,22 @@ import Seat from './Seat';
 import StudentDetail from './StudentDetail';
 import StudentInfoCharts from './StudentInfoCharts';
 
+const wsAddr = `ws://localhost:3002`;
+
 export default class Seats extends React.Component {
     componentDidMount() {
         this.fetchSeats();
-        this.fetchStudentList();
+        // this.fetchStudentList();
+
+        const wsConn = new WebSocket(wsAddr);
+        wsConn.onopen = () => {
+            console.log('connected to ws server');
+        }
+
+        wsConn.onmessage = msg => {
+            const studentInfo = JSON.parse(msg.data);
+            this.props.onStudentAdd(studentInfo);
+        }
     }
 
     fetchSeats() {
@@ -20,12 +32,12 @@ export default class Seats extends React.Component {
     }
 
     fetchStudentList() {
-        fetch('http://localhost:3001/students')
-            .then(res => res.text())
-            .then(body => {
-                const studentData = JSON.parse(body);
-                this.props.onStudentDataFetch(studentData);
-            });
+        // fetch('http://localhost:3001/students')
+        //     .then(res => res.text())
+        //     .then(body => {
+        //         const studentData = JSON.parse(body);
+        //         this.props.onStudentDataFetch(studentData);
+        //     });
     }
 
     render() {
@@ -43,13 +55,13 @@ export default class Seats extends React.Component {
                             onSelect={onSeatSelect}/>
                     )}
                 </div>
-                <StudentDetail selectedStudent={seats.find(s => s.id === selectedSeat.id)} />
+                <StudentDetail selectedStudent={students.find(s => s.id === selectedSeat.id)} />
                 <StudentInfoCharts students={students} />
             </div>
         );
     }
 
     _getStudentBySeat(students, seatId) {
-        return students.find(student => student.seat.id === seatId);
+        return students.find(student => student.seatId === seatId);
     }
 }

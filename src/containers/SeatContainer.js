@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import Seats from '../components/Seats';
-import { selectSeat, setStudentData, setSeatData } from '../actions';
+import { selectSeat, setStudentData, setSeatData, addStudent } from '../actions';
 
 const mapStateToProps = state => ({
     seats: state.seats,
@@ -12,6 +12,7 @@ const mapDispatchToProps = ({
     onSeatSelect: selectSeat,
     onStudentDataFetch: setStudentData,
     onSeatDataFetch: setSeatData,
+    onStudentAdd: addStudent,
 });
 
 const SeatContainer = connect(
