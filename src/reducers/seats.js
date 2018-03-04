@@ -1,27 +1,14 @@
-const dummy_seats = [
-    {
-        id: 1,
-    }, 
-    {
-        id: 2,
-    }, 
-    {
-        id: 3,
-    }, 
-    {
-        id: 4,
-    }, 
-]
+
 
 const seats = (state = [], action) => {
-    console.log(action)
+    console.log(action);
     switch (action.type) {
-        case 'ADD_SEAT':
-            return [];
-            break;
+        case 'SET_STUDENT_DATA':
+            return action.data;
     }
 
-    return dummy_seats;
+    // return dummy_students;
+    return [];
 };
 
 export default seats;

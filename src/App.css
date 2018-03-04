@@ -1,11 +1,54 @@
 .App {
-  text-align: center;
+    text-align: center;
+}
+
+.seatContainer {
+    margin: 20px;
+    display: flex;
 }
 
 .seat {
-  background: red;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80px;
+    width: 150px;
+    margin: 20px;
+    background: #aaa;
+    color: white;
+    cursor: default;
+}
+
+.seat:hover {
+    background: #999;
+}
+
+.seat .hovered {
+    display: none;
+}
+
+.seat:hover .default {
+    display: none;
+}
+
+.seat:hover .hovered {
+    display: block;
 }
 
 .seat.selected {
-  background: green;
+    background: green;
+}
+
+.student-detail {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 400px;
+    height: 100%;
+    background: #eee;
+    transition: transform 0.2s;
+}
+
+.student-detail.hidden {
+    transform: translateX(400px);
 }

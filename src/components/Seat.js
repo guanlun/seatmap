@@ -1,12 +1,15 @@
 import React from 'react';
 
-const Seat = ({ seatId, isSelected, onSelect }) => {
+const Seat = ({ seatSpec, isSelected, onSelect }) => {
     const classNames = ['seat'];
     if (isSelected) {
         classNames.push('selected');
     }
     return (
-        <div onClick={() => onSelect(seatId)} className={classNames.join(' ')}>I'm a seat</div>
+        <div onClick={() => onSelect(seatSpec.id)} className={classNames.join(' ')}>
+            <div className='default'>{seatSpec.name}</div>
+            <div className='hovered'>{seatSpec.perf}</div>
+        </div>
     );
 };
 
