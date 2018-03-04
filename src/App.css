@@ -8,11 +8,12 @@
 }
 
 .seat {
+    position: absolute;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 80px;
-    width: 150px;
+    height: 70px;
+    width: 120px;
     margin: 20px;
     background: #aaa;
     color: white;

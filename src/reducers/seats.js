@@ -1,14 +1,11 @@
-
-
 const seats = (state = [], action) => {
-    console.log(action);
     switch (action.type) {
-        case 'SET_STUDENT_DATA':
+        case 'SET_SEAT_DATA':
+        console.log('seat data fetched', action.data)
             return action.data;
     }
 
-    // return dummy_students;
-    return [];
+    return state;
 };
 
 export default seats;

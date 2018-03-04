@@ -5,11 +5,22 @@ import StudentDetail from './StudentDetail';
 
 export default class Seats extends React.Component {
     componentDidMount() {
+        this.fetchSeats();
         this.fetchStudentList();
     }
 
+    fetchSeats() {
+        fetch('http://localhost:3001/seats')
+            .then(res => res.text())
+            .then(body => {
+                const studentData = JSON.parse(body);
+                console.log(studentData)
+                this.props.onSeatDataFetch(studentData);
+            });
+    }
+
     fetchStudentList() {
-        fetch('http://localhost:3001/')
+        fetch('http://localhost:3001/students')
             .then(res => res.text())
             .then(body => {
                 const studentData = JSON.parse(body);
@@ -18,7 +29,7 @@ export default class Seats extends React.Component {
     }
 
     render() {
-        const { seats, selectedSeat, onSeatSelect } = this.props;
+        const { seats, students, selectedSeat, onSeatSelect } = this.props;
 
         return (
             <div>
@@ -28,11 +39,16 @@ export default class Seats extends React.Component {
                             key={seat.id}
                             isSelected={selectedSeat.id === seat.id}
                             seatSpec={seat}
+                            seatedStudent={this._getStudentBySeat(students, seat.id)}
                             onSelect={onSeatSelect}/>
                     )}
                 </div>
                 <StudentDetail selectedStudent={seats.find(s => s.id === selectedSeat.id)} />
             </div>
         );
+    }
+
+    _getStudentBySeat(students, seatId) {
+        return students.find(student => student.seat.id === seatId);
     }
 }
