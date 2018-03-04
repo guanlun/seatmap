@@ -4,6 +4,7 @@
 
 .seatContainer {
     margin: 20px;
+    height: 260px;
     display: flex;
 }
 
@@ -52,4 +53,7 @@
 
 .student-detail.hidden {
     transform: translateX(400px);
+}
+
+.student-info-charts {
 }

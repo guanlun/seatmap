@@ -2,6 +2,7 @@ import React from 'react';
 import fetch from 'node-fetch';
 import Seat from './Seat';
 import StudentDetail from './StudentDetail';
+import StudentInfoCharts from './StudentInfoCharts';
 
 export default class Seats extends React.Component {
     componentDidMount() {
@@ -14,7 +15,6 @@ export default class Seats extends React.Component {
             .then(res => res.text())
             .then(body => {
                 const studentData = JSON.parse(body);
-                console.log(studentData)
                 this.props.onSeatDataFetch(studentData);
             });
     }
@@ -44,6 +44,7 @@ export default class Seats extends React.Component {
                     )}
                 </div>
                 <StudentDetail selectedStudent={seats.find(s => s.id === selectedSeat.id)} />
+                <StudentInfoCharts students={students} />
             </div>
         );
     }
