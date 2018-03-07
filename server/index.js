@@ -1,6 +1,9 @@
 const express = require('express');
 const WebSocket = require('ws');
 const MongoClient = require('mongodb').MongoClient;
+const bodyParser = require('body-parser');
+const shajs = require('sha.js');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 const ws = new WebSocket.Server({ port: 3002 });
@@ -44,20 +47,7 @@ function generateRandomStudentPerformance() {
     }
 }
 
-const seats = [];
-let seatIdx = 0;
-for (let x = 0; x < 5; x++) {
-    for (let y = 0; y < 3; y++) {
-        seats.push({
-            id: seatIdx,
-            position: {
-                x: 20 + x * 150,
-                y: 20 + y * 80,
-            },
-        });
-        seatIdx++;
-    }
-}
+let seats = [];
 
 let studentGeneratorInterval = null;
 
@@ -81,14 +71,27 @@ function generateStudent(ws) {
     ws.send(JSON.stringify(student));
 }
 
-// MongoClient.connect('mongodb://localhost:27017/', (err, db) => {
-// })
+let mongodb = null;
+
+MongoClient.connect('mongodb://localhost:27017/', (err, client) => {
+    mongodb = client.db('seatmap');
+    const seatCollection = mongodb.collection('seats');
+
+    seatCollection.find({}).toArray((err, docs) => {
+        seats = docs;
+    });
+})
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Credentials', true);
 
     next();
 });
+
+// app.use(cors());
+app.use(bodyParser.text());
+app.use(cookieParser());
 
 app.get('/seats/', (req, res) => {
     res.send(JSON.stringify(seats));
@@ -96,6 +99,65 @@ app.get('/seats/', (req, res) => {
 
 app.get('/students/', (req, res) => {
     res.send(JSON.stringify(students));
+});
+
+function loginUser(username, password) {
+    return new Promise((resolve, reject) => {
+        mongodb.collection('users').find({ username }).toArray((err, docs) => {
+            if (docs.length !== 1) {
+                reject('username not found');
+            }
+
+            const user = docs[0];
+
+            if (user.password === password) {
+                const token = generateUserToken();
+
+                mongodb.collection('users').updateOne({ username }, {
+                    $set: {
+                        token,
+                    }
+                }, (err, res) => {
+                    if (res) {
+                        resolve(token);
+                    } else {
+                        reject('login failed: server error');
+                    }
+                });
+            } else {
+                reject('wrong password');
+            }
+        })
+    });
+}
+
+function generateUserToken() {
+    const dict = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const token = [];
+    for (let i = 0; i < 30; i++) {
+        token.push(dict.charAt(Math.floor(Math.random() * dict.length)));
+    }
+
+    return token.join('');
+}
+
+app.post('/studentLogin', (req, res) => {
+    const reqData = JSON.parse(req.body);
+    console.log(req.cookies)
+
+    loginUser(reqData.username, reqData.password).then((token, err) => {
+        if (token) {
+            res.send(JSON.stringify({
+                success: true,
+                token,
+            }));
+        } else {
+            res.send(JSON.stringify({
+                success: false,
+                err,
+            }));
+        }
+    });
 });
 
 app.listen(3001, () => console.log('Example app listening on port 3001!'));
