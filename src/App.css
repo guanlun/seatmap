@@ -1,7 +1,3 @@
-.App {
-    text-align: center;
-}
-
 .seatContainer {
     margin: 20px;
     height: 260px;
@@ -52,11 +48,31 @@
     width: 400px;
     height: 100%;
     background: #eee;
+    padding: 30px;
     transition: transform 0.2s;
 }
 
 .student-detail.hidden {
-    transform: translateX(400px);
+    /* transform: translateX(400px); */
+}
+
+.student-detail-header {
+    height: 48px;
+    display: flex;
+    align-items: center;
+}
+
+.student-detail-header > svg {
+    margin-right: 10px;
+}
+
+.student-detail-content {
+    margin-left: 42px;
+}
+
+.student-name {
+    font-size: 24px;
+    font-weight: bold;
 }
 
 .student-info-charts {
@@ -64,7 +80,6 @@
 
 .attendance-list {
     display: flex;
-    justify-content: center;
 }
 
 .attendance-item {

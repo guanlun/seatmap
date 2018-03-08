@@ -1,5 +1,6 @@
 import React from 'react';
 import fetch from 'node-fetch';
+import { request } from './Utils';
 
 export default class StudentLogin extends React.Component {
     constructor() {
@@ -22,38 +23,23 @@ export default class StudentLogin extends React.Component {
 
     login(evt) {
         evt.preventDefault();
-        
-        // fetch('http://127.0.0.1:3001/studentLogin', {
-        //     method: 'POST',
-        //     body: JSON.stringify({
-        //         username: this.username,
-        //         password: this.password,
-        //     }),
-        // })
-        // .then(res => res.text())
-        // .then(body => {
-        //     const resData = JSON.parse(body);
-        //     // console.log(resData)
-        //     document.cookie = `userToken=${resData.token}`;
-        //     console.log(document.cookie)
-        // });
 
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'http://localhost:3001/studentLogin', true);
-        xhr.withCredentials = true;
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                const resData = JSON.parse(xhr.responseText);
-                if (resData.success) {
-                    document.cookie = `userToken=${resData.token}`;
-                    window.location = '/student';
-                }
+        request({
+            endpoint: 'studentLogin',
+            method: 'POST',
+            payload: {
+                username: this.username,
+                password: this.password,
+            },
+        }).then((resData, err) => {
+            if (err) {
+                console.log('login failed')
+            } else {
+                document.cookie = `userId=${resData.user._id}`;
+                document.cookie = `userToken=${resData.user.token}`;
+                window.location = '/student';
             }
-        };
-        xhr.send(JSON.stringify({
-            username: this.username,
-            password: this.password,
-        }));
+        })
     }
 };
 

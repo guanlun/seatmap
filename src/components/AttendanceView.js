@@ -1,13 +1,22 @@
 import React from 'react';
+import FaCalendarCheckO from 'react-icons/lib/fa/calendar-check-o';
+import FaCalendarTimesO from 'react-icons/lib/fa/calendar-times-o';
 
 const AttendanceView = ({ attendance }) => {
     return (
-        <div className='attendance-view'>
-            <p>Attendance:</p>
-            <div className='attendance-list'>
-                {attendance.map(attended => (
-                    <div className={`attendance-item ${attended ? 'attended' : 'absent'}`}></div>
-                ))}
+        <div>
+            <div className='attendance-view student-detail-header'>
+                <FaCalendarCheckO size={32} />
+                <span>Attendance:</span>
+            </div>
+            <div className='student-detail-content'>
+                <div className='attendance-list'>
+                    {attendance.map(attended => (
+                        attended
+                        ? <FaCalendarCheckO color='green' size={30} /> 
+                        : <FaCalendarTimesO color='red' size={30} />
+                    ))}
+                </div>
             </div>
         </div>
     );

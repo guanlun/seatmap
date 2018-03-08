@@ -119,7 +119,7 @@ function loginUser(username, password) {
                     }
                 }, (err, res) => {
                     if (res) {
-                        resolve(token);
+                        resolve(user);
                     } else {
                         reject('login failed: server error');
                     }
@@ -145,11 +145,11 @@ app.post('/studentLogin', (req, res) => {
     const reqData = JSON.parse(req.body);
     console.log(req.cookies)
 
-    loginUser(reqData.username, reqData.password).then((token, err) => {
-        if (token) {
+    loginUser(reqData.username, reqData.password).then((user, err) => {
+        if (user) {
             res.send(JSON.stringify({
                 success: true,
-                token,
+                user,
             }));
         } else {
             res.send(JSON.stringify({
@@ -160,7 +160,18 @@ app.post('/studentLogin', (req, res) => {
     });
 });
 
-app.listen(3001, () => console.log('Example app listening on port 3001!'));
+app.get('/studentInfo', (req, res) => {
+    console.log(req.body, typeof req.body)
+    // const reqData = JSON.parse(req.body);
+    const reqData = req.body;
+    console.log(req.cookies)
+
+    res.send(JSON.stringify({
+        success: true,
+    }));
+});
+
+app.listen(3001, () => console.log('Listening on port 3001!'));
 
 ws.on('connection', socket => {
     console.log('connected!!!');
