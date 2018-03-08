@@ -31,54 +31,38 @@ const dummyNames = [
     'Despina Zollinger',
 ];
 
-function randArrayOfValues(length, values) {
-    const arr = [];
-    const vCount = values.length;
-    for (let i = 0; i < length; i++) {
-        arr.push(values[Math.floor(Math.random() * vCount)]);
-    }
-
-    return arr;
-}
-
-function generateRandomStudentPerformance() {
-    return {
-        attendance: randArrayOfValues(10, [true, false]),
-    }
-}
-
 let seats = [];
 
 let studentGeneratorInterval = null;
 
 let students = [];
 
-function generateStudent(ws) {
-    if (students.length === seats.length) {
+let mockStudentIndex = 0;
+function mockStudentLogin(ws) {
+    console.log(mockStudentIndex)
+    if (mockStudentIndex === students.length) {
         clearInterval(studentGeneratorInterval);
         return;
     }
 
-    const student = {
-        id: students.length,
-        name: dummyNames[students.length],
-        seatId: seats[students.length].id,
-        performance: generateRandomStudentPerformance(),
-    };
+    ws.send(JSON.stringify(students[mockStudentIndex]));
 
-    students.push(student);
-
-    ws.send(JSON.stringify(student));
+    mockStudentIndex++;
 }
 
 let mongodb = null;
 
 MongoClient.connect('mongodb://localhost:27017/', (err, client) => {
     mongodb = client.db('seatmap');
-    const seatCollection = mongodb.collection('seats');
 
+    const seatCollection = mongodb.collection('seats');
     seatCollection.find({}).toArray((err, docs) => {
         seats = docs;
+    });
+
+    const studentCollection = mongodb.collection('students');
+    studentCollection.find({}).toArray((err, docs) => {
+        students = docs;
     });
 })
 
@@ -161,8 +145,6 @@ app.post('/studentLogin', (req, res) => {
 });
 
 app.get('/studentInfo', (req, res) => {
-    console.log(req.body, typeof req.body)
-    // const reqData = JSON.parse(req.body);
     const reqData = req.body;
     console.log(req.cookies)
 
@@ -176,15 +158,16 @@ app.listen(3001, () => console.log('Listening on port 3001!'));
 ws.on('connection', socket => {
     console.log('connected!!!');
 
-    students = [];
-    studentGeneratorInterval = setInterval(() => generateStudent(socket), 500);
+    mockStudentIndex = 0;
+
+    studentGeneratorInterval = setInterval(() => mockStudentLogin(socket), 500);
 
     socket.on('close', () => {
         console.log('websocket closed');
     });
 
     socket.on('error', () => {
-        students = [];
+        mockStudentIndex = 0;
         clearInterval(studentGeneratorInterval);
         console.log('websocket error');
     });

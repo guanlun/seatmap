@@ -44,7 +44,8 @@ export default class Seats extends React.Component {
         const { seats, students, selectedSeat, onSeatSelect } = this.props;
 
         return (
-            <div>
+            <div className='classroom'>
+                <div className='page-title'>CLASSROOM SEAT MAP</div>
                 <div className='seatContainer'>
                     {seats.map(seat =>
                         <Seat 
@@ -55,7 +56,7 @@ export default class Seats extends React.Component {
                             onSelect={onSeatSelect}/>
                     )}
                 </div>
-                <StudentDetail selectedStudent={students.find(s => s.id === selectedSeat.id)} />
+                <StudentDetail selectedStudent={students.find(s => s.seatId === selectedSeat.id)} />
                 <StudentInfoCharts students={students} />
             </div>
         );

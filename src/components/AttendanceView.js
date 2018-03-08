@@ -1,4 +1,5 @@
 import React from 'react';
+import FaCalendar from 'react-icons/lib/fa/calendar';
 import FaCalendarCheckO from 'react-icons/lib/fa/calendar-check-o';
 import FaCalendarTimesO from 'react-icons/lib/fa/calendar-times-o';
 
@@ -6,7 +7,7 @@ const AttendanceView = ({ attendance }) => {
     return (
         <div>
             <div className='attendance-view student-detail-header'>
-                <FaCalendarCheckO size={32} />
+                <FaCalendar size={32} />
                 <span>Attendance:</span>
             </div>
             <div className='student-detail-content'>

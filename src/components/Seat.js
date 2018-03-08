@@ -12,7 +12,7 @@ const Seat = ({ seatSpec, seatedStudent, isSelected, onSelect }) => {
 
     const elStyle = {
         left: seatSpec.position.x,
-        top: seatSpec.position.y,
+        top: seatSpec.position.y + 60,
     };
 
     return (

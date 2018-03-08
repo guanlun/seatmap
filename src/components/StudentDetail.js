@@ -14,9 +14,9 @@ const StudentDetail = ({ selectedStudent }) => {
                     <span>{selectedStudent.name}</span>
                 </div>
                 <PerformanceView studentPerformance={selectedStudent.performance} />
-                <WritingView />
+                <WritingView writingSpec={selectedStudent} />
             </div>
-        )
+        );
     }
 };
 
