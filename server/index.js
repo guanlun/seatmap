@@ -4,6 +4,7 @@ const MongoClient = require('mongodb').MongoClient;
 const bodyParser = require('body-parser');
 const shajs = require('sha.js');
 const cookieParser = require('cookie-parser');
+const keywordExtractor = require('keyword-extractor');
 
 const app = express();
 const ws = new WebSocket.Server({ port: 3002 });
@@ -67,7 +68,7 @@ MongoClient.connect('mongodb://localhost:27017/', (err, client) => {
 })
 
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Credentials', true);
 
     next();
@@ -146,11 +147,21 @@ app.post('/studentLogin', (req, res) => {
 
 app.get('/studentInfo', (req, res) => {
     const reqData = req.body;
-    console.log(req.cookies)
 
     res.send(JSON.stringify({
         success: true,
     }));
+});
+
+app.get('/keywords', (req, res) => {
+    const texts = students.map(s => s.storyText);
+
+    const allText = texts.join(' ');
+
+    const keywords = keywordExtractor.extract(allText, { language: 'english', remove_duplicates: true });
+    console.log(keywords)
+
+    res.write('ok');
 });
 
 app.listen(3001, () => console.log('Listening on port 3001!'));

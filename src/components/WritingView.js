@@ -18,6 +18,9 @@ const WritingView = ({ writingSpec }) => {
             <div className='attendance-view student-detail-header'>
                 <FaFileTextO size={32} />
                 <span>Writing:</span>
+                <div className='writing-body'>
+                    {writingSpec.storyText}
+                </div>
             </div>
         </div>
     );

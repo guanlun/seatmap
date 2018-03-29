@@ -1,4 +1,5 @@
 const MongoClient = require('mongodb').MongoClient;
+const loremIpsum = require('lorem-ipsum');
 
 const DUMMY_NAMES = [
     'Fabian Button',
@@ -90,6 +91,9 @@ for (let i = 0; i < 12; i++) {
         seatId: shuffledSeats[i].id,
         storyTopic: randomItem(DUMMY_TOPICS),
         storyContext: randomItem(DUMMY_CONTEXT),
+        storyText: loremIpsum({
+            count: 5,
+        })
     });
 }
 

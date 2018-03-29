@@ -3,8 +3,9 @@ import fetch from 'node-fetch';
 import Seat from './Seat';
 import StudentDetail from './StudentDetail';
 import StudentInfoCharts from './StudentInfoCharts';
+import { SERVER_IP } from '../config';
 
-const wsAddr = `ws://localhost:3002`;
+const wsAddr = `ws://${SERVER_IP}:3002`;
 
 export default class Seats extends React.Component {
     componentDidMount() {
@@ -23,7 +24,7 @@ export default class Seats extends React.Component {
     }
 
     fetchSeats() {
-        fetch('http://localhost:3001/seats')
+        fetch(`http://${SERVER_IP}:3001/seats`)
             .then(res => res.text())
             .then(body => {
                 const studentData = JSON.parse(body);
@@ -48,7 +49,7 @@ export default class Seats extends React.Component {
                 <div className='page-title'>CLASSROOM SEAT MAP</div>
                 <div className='seatContainer'>
                     {seats.map(seat =>
-                        <Seat 
+                        <Seat
                             key={seat.id}
                             isSelected={selectedSeat.id === seat.id}
                             seatSpec={seat}

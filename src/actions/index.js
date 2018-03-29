@@ -17,3 +17,13 @@ export const addStudent = student => ({
     type: 'ADD_STUDENT',
     data: student,
 });
+
+export const selectSeatTemplate = template => ({
+    type: 'SELECT_SEAT_TEMPLATE',
+    data: template,
+});
+
+export const changeSeatPosition = (id, x, y) => ({
+    type: 'SEAT_POSITION_CHANGE',
+    data: { id, x, y },
+});

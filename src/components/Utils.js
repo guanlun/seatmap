@@ -1,4 +1,4 @@
-const SERVER_ADDR = 'http://localhost:3001';
+const SERVER_ADDR = 'http://10.230.161.231:3001';
 
 export function request({ endpoint, method = 'GET', payload = {} }) {
     return new Promise((resolve, reject) => {

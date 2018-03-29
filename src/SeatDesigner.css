@@ -1,0 +1,66 @@
+.seat-designer-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.seat-designer-title {
+    flex-basis: 100%;
+    text-align: center;
+    font-size: 20px;
+    margin: 20px;
+}
+
+.seat-template-options {
+    display: flex;
+    border-radius: 4px;
+    border: 1px black solid;
+}
+
+.seat-template-item {
+    display: flex;
+    width: 150px;
+    height: 30px;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px black solid;
+    cursor: pointer;
+}
+
+.seat-template-item.selected {
+    background: #aaa;
+}
+
+.seat-template-item:last-child {
+    border-right: none;
+}
+
+.seat-area {
+    position: relative;
+    flex-basis: 100%;
+    width: 100%;
+}
+
+.seat-item {
+    position: absolute;
+    width: 100px;
+    height: 60px;
+    border: 1px black solid;
+    cursor: move;
+}
+
+.seat-rotator {
+    position: absolute;
+    right: -10px;
+    top: -10px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px black solid;
+    display: none;
+    cursor: grab;
+}
+
+.seat-item:hover .seat-rotator {
+    display: block;
+}

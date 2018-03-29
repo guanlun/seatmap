@@ -66,9 +66,10 @@
 }
 
 .student-detail-header {
-    height: 48px;
-    display: flex;
-    align-items: center;
+    height: 36px;
+    margin-top: 10px;
+    /* display: flex; */
+    /* align-items: center; */
 }
 
 .student-detail-header > svg {
@@ -85,7 +86,7 @@
 }
 
 .student-info-charts {
-    
+
 }
 
 .attendance-list {
@@ -104,4 +105,9 @@
 
 .attendance-item.absent {
     background: red;
+}
+
+.writing-body {
+    margin-top: 12px;
+    margin-left: 40px;
 }
