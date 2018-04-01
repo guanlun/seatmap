@@ -36,6 +36,9 @@ const seatDesign = (state = [], action) => {
                     },
                 },
             });
+        case 'SAVE_SEAT_MAP':
+            console.log('haha')
+            return state;
     }
     return state;
 };

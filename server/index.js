@@ -9,29 +9,6 @@ const keywordExtractor = require('keyword-extractor');
 const app = express();
 const ws = new WebSocket.Server({ port: 3002 });
 
-const dummyNames = [
-    'Fabian Button',
-    'Ami Branner',
-    'Lashaun Trostle',
-    'Nolan Coppock',
-    'Jaimee Averitt',
-    'Bianca Blossom',
-    'Tarsha Foutch',
-    'Cathi Hensler',
-    'Alia Dupont',
-    'Gaynell Rueter',
-    'Maribel Redington',
-    'Hwa Coakley',
-    'Ofelia Lakes',
-    'Ellie Bernhard',
-    'Johana Minelli',
-    'Jae Eggert',
-    'Deedra Hoehne',
-    'Harris Canady',
-    'Reginald Starks',
-    'Despina Zollinger',
-];
-
 let seats = [];
 
 let studentGeneratorInterval = null;
@@ -68,7 +45,7 @@ MongoClient.connect('mongodb://localhost:27017/', (err, client) => {
 })
 
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
     res.setHeader('Access-Control-Allow-Credentials', true);
 
     next();
@@ -161,7 +138,33 @@ app.get('/keywords', (req, res) => {
     const keywords = keywordExtractor.extract(allText, { language: 'english', remove_duplicates: true });
     console.log(keywords)
 
-    res.write('ok');
+    res.send('ok');
+});
+
+app.get('/getSeatmaps', (req, res) => {
+    const seatmapsCollection = mongodb.collection('seatmaps');
+    seatmapsCollection.find({}).toArray((err, docs) => {
+        res.send(JSON.stringify(docs));
+    });
+});
+
+app.post('/saveSeatmap', (req, res) => {
+    const seatmap = JSON.parse(req.body);
+    const seatmapsCollection = mongodb.collection('seatmaps');
+    seatmapsCollection.find({ name: seatmap.name }).toArray((err, docs) => {
+        if (docs.length === 0) {
+            seatmapsCollection.insert(seatmap);
+        } else if (docs.length === 1) {
+            seatmapsCollection.update({ name: seatmap.name }, {
+                $set: {
+                    seats: seatmap.seats,
+                },
+            });
+        }
+    });
+    // seatmapsCollection.insert(seatmap);
+
+    res.send(JSON.stringify({ status: 'ok' }));
 });
 
 app.listen(3001, () => console.log('Listening on port 3001!'));
