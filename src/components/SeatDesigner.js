@@ -148,9 +148,9 @@ export default class SeatDesigner extends React.Component {
                 $merge: {
                     [seatIdx]: {
                         id: origSeat.id,
-                        x: x || origSeat.x,
-                        y: y || origSeat.y,
-                        rotation: rotation || origSeat.rotation,
+                        x,
+                        y,
+                        rotation,
                     },
                 },
             }),
