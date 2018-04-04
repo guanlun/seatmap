@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import Seats from '../components/Seats';
-import { selectSeat, setStudentData, setSeatData, addStudent } from '../actions';
+import { selectSeat, setStudentData, setSeatData, addStudent, seatmapLoaded } from '../actions';
 
 const mapStateToProps = state => ({
     seats: state.seats,

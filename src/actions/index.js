@@ -31,3 +31,8 @@ export const changeSeatPosition = (id, x, y) => ({
 export const saveSaetMap = () => ({
     type: 'SAVE_SEAT_MAP',
 });
+
+export const seatmapLoaded = seatmapData => ({
+    type: 'SEATMAP_LOADED',
+    data: seatmapData,
+});

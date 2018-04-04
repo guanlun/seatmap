@@ -12,10 +12,10 @@ const AttendanceView = ({ attendance }) => {
             </div>
             <div className='student-detail-content'>
                 <div className='attendance-list'>
-                    {attendance.map(attended => (
+                    {attendance.map((attended, idx) => (
                         attended
-                        ? <FaCalendarCheckO color='green' size={30} /> 
-                        : <FaCalendarTimesO color='red' size={30} />
+                        ? <FaCalendarCheckO key={`attendance_${idx}`}color='green' size={30} />
+                        : <FaCalendarTimesO key={`attendance_${idx}`} color='red' size={30} />
                     ))}
                 </div>
             </div>

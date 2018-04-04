@@ -103,8 +103,10 @@
 .student-detail-header {
     height: 36px;
     margin-top: 10px;
-    /* display: flex; */
-    /* align-items: center; */
+}
+
+.student-detail-header.selectable {
+    cursor: pointer;
 }
 
 .student-detail-header > svg {
@@ -145,4 +147,36 @@
 .writing-body {
     margin-top: 12px;
     margin-left: 40px;
+}
+
+.seatmap-preview-scroller {
+    width: 900px;
+    overflow-x: scroll;
+}
+
+.seatmap-preview-list {
+    display: flex;
+}
+
+.seatmap-preview-item {
+    margin-left: 30px;
+}
+
+.seats-preview {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    border: 1px #ccc solid;
+    overflow: hidden;
+}
+
+.seats-preview-content {
+    transform: scale(0.4, 0.4);
+}
+
+.seats-preview-item {
+    position: absolute;
+    width: 100px;
+    height: 60px;
+    border: 1px black solid;
 }

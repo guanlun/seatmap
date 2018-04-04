@@ -16,8 +16,6 @@ export default class SeatArea extends React.Component {
     render() {
         const { seats } = this.props;
 
-        console.log(seats[0])
-
         return (
             <div
                 ref="seatArea"

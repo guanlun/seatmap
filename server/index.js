@@ -15,7 +15,10 @@ let studentGeneratorInterval = null;
 
 let students = [];
 
+let webSocket = null;
+
 let mockStudentIndex = 0;
+
 function mockStudentLogin(ws) {
     console.log(mockStudentIndex)
     if (mockStudentIndex === students.length) {
@@ -166,22 +169,37 @@ app.post('/saveSeatmap', (req, res) => {
     res.send(JSON.stringify({ status: 'ok' }));
 });
 
-app.listen(3001, () => console.log('Listening on port 3001!'));
+app.get('/beginMockingStudents', (req, res) => {
+    if (!webSocket || mockStudentIndex !== 0) {
+        res.send(JSON.stringify({
+            success: false,
+        }));
+        return;
+    }
 
-ws.on('connection', socket => {
     console.log('connected!!!');
 
     mockStudentIndex = 0;
 
-    studentGeneratorInterval = setInterval(() => mockStudentLogin(socket), 500);
+    studentGeneratorInterval = setInterval(() => mockStudentLogin(webSocket), 500);
 
-    socket.on('close', () => {
+    webSocket.on('close', () => {
         console.log('websocket closed');
     });
 
-    socket.on('error', () => {
+    webSocket.on('error', () => {
         mockStudentIndex = 0;
         clearInterval(studentGeneratorInterval);
         console.log('websocket error');
     });
+
+    res.send(JSON.stringify({
+        success: true,
+    }));
+});
+
+app.listen(3001, () => console.log('Listening on port 3001!'));
+
+ws.on('connection', socket => {
+    webSocket = socket;
 });

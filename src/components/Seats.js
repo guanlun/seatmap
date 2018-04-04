@@ -1,10 +1,11 @@
 import React from 'react';
-import fetch from 'node-fetch';
 import Seat from './Seat';
 import StudentDetail from './StudentDetail';
 import StudentInfoCharts from './StudentInfoCharts';
+import SeatmapPreview from './SeatmapPreview';
 import FaSearch from 'react-icons/lib/fa/search';
 import { SERVER_IP } from '../config';
+import { request } from './Utils';
 
 const wsAddr = `ws://${SERVER_IP}:3002`;
 
@@ -13,6 +14,8 @@ export default class Seats extends React.Component {
         super();
 
         this.state = {
+            seatMapSelected: false,
+            seatmaps: [],
             nameFilter: '',
             highlightedType: undefined,
             highlightedCategory: undefined,
@@ -36,12 +39,22 @@ export default class Seats extends React.Component {
     }
 
     fetchSeats() {
-        fetch(`http://${SERVER_IP}:3001/seats`)
-            .then(res => res.text())
-            .then(body => {
-                const studentData = JSON.parse(body);
-                this.props.onSeatDataFetch(studentData);
-            });
+        // fetch(`http://${SERVER_IP}:3001/seats`)
+        //     .then(res => res.text())
+        //     .then(body => {
+        //         const studentData = JSON.parse(body);
+        //         this.props.onSeatDataFetch(studentData);
+        //     });
+
+        const { onSeatmapsReady } = this.props;
+
+        request({
+            endpoint: 'getSeatmaps',
+        }).then(seatmaps => {
+            this.setState({
+                seatmaps,
+            })
+        })
     }
 
     fetchStudentList() {
@@ -55,7 +68,7 @@ export default class Seats extends React.Component {
 
     render() {
         const { seats, students, selectedSeat, onSeatSelect, onChartAreaSelect } = this.props;
-        const { nameFilter, highlightedType, highlightedCategory, highlightColor } = this.state;
+        const { seatmaps, seatMapSelected, nameFilter, highlightedType, highlightedCategory, highlightColor } = this.state;
 
         return (
             <div className='classroom'>
@@ -71,25 +84,57 @@ export default class Seats extends React.Component {
                             onChange={this.handleNameFilterChange.bind(this)}
                             onBlur={this.handleNameFilterBlur.bind(this)} />
                     </div>
+                    <button
+                        className='mock-start-button'
+                        onClick={this.handleMockStudentButtonClick.bind(this)}>
+                        Mock student
+                    </button>
                 </div>
-                <div className='seatContainer'>
-                    {seats.map(seat =>
-                        <Seat
-                            key={seat.id}
-                            isSelected={selectedSeat.id === seat.id}
-                            nameFilter={nameFilter}
-                            highlightedType={highlightedType}
-                            highlightedCategory={highlightedCategory}
-                            highlightColor={highlightColor}
-                            seatSpec={seat}
-                            seatedStudent={this._getStudentBySeat(students, seat.id)}
-                            onSelect={onSeatSelect}/>
-                    )}
-                </div>
-                <StudentDetail selectedStudent={students.find(s => s.seatId === selectedSeat.id)} />
+                {seatMapSelected ?
+                    <div className='seatContainer'>
+                        {seats.map(seat =>
+                            <Seat
+                                key={seat.id}
+                                isSelected={selectedSeat.id === seat.id}
+                                nameFilter={nameFilter}
+                                highlightedType={highlightedType}
+                                highlightedCategory={highlightedCategory}
+                                highlightColor={highlightColor}
+                                seatSpec={seat}
+                                seatedStudent={this._getStudentBySeat(students, seat.id)}
+                                onSelect={onSeatSelect}/>
+                        )}
+                    </div>
+                    :
+                    <div className='seatmap-preview-container'>
+                        <div>Seatmap Previews</div>
+                        <div className='seatmap-preview-scroller'>
+                            <div className='seatmap-preview-list'>
+                                {seatmaps.map((seatmap, idx) =>
+                                    <SeatmapPreview key={`seatmap_${idx}`} seatmap={seatmap} />
+                                )}
+                            </div>
+                            <div className="seatmap-select-button">Select seatmap</div>
+
+                            {/* TODO: edit button on seatmap itself (appear on hover)? */}
+                            <div className="seatmap-edit-button">Edit seatmap</div>
+                        </div>
+                    </div>
+                }
+                <StudentDetail
+                    selectedStudent={students.find(s => s.seatId === selectedSeat.id)}
+                    onWritingCategorySelect={this.handleWritingCategorySelect.bind(this)} />
                 <StudentInfoCharts students={students} onAreaSelect={this.handleChartAreaSelect.bind(this)} />
             </div>
         );
+    }
+
+    handleWritingCategorySelect(categoryType, selectedCategory) {
+        this.setState({
+            highlightedType: categoryType,
+            highlightedCategory: selectedCategory,
+            highlightColor: 'rgb(54, 162, 235)',
+        })
     }
 
     handleChartAreaSelect(chartType, selectedLabel, color) {
@@ -113,6 +158,12 @@ export default class Seats extends React.Component {
         this.setState({
             nameFilter: '',
             highlightColor: undefined,
+        });
+    }
+
+    handleMockStudentButtonClick() {
+        request({
+            endpoint: 'beginMockingStudents',
         });
     }
 
