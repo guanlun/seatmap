@@ -51,7 +51,6 @@ app.use((req, res, next) => {
     next();
 });
 
-// app.use(cors());
 app.use(bodyParser.text());
 app.use(cookieParser());
 

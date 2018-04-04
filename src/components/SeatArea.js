@@ -1,5 +1,8 @@
 import React from 'react';
 
+const SEAT_WIDTH = 100;
+const SEAT_HEIGHT = 60;
+
 export default class SeatArea extends React.Component {
     constructor() {
         super();
@@ -72,14 +75,21 @@ export default class SeatArea extends React.Component {
         const seat = this.activeSeat;
 
         if (this.moving) {
-            onSeatPositionChange(seat.id, clientX - this.mouseDownOffset.x, clientY - containerOffset - this.mouseDownOffset.y);
+            onSeatPositionChange(
+                seat.id,
+                clientX - this.mouseDownOffset.x + SEAT_WIDTH / 2,
+                clientY - containerOffset - this.mouseDownOffset.y + SEAT_HEIGHT / 2
+            );
         } else if (this.rotating) {
             const seatMidPos = {
-                x: seat.x + 100 / 2,
-                y: seat.y + 60 / 2,
+                x: seat.x,
+                y: seat.y,
             };
 
-            const dragDestAngleRad = Math.atan2(clientY - containerOffset - seatMidPos.y, clientX - seatMidPos.x);
+            const dragDestAngleRad = Math.atan2(
+                clientY - containerOffset - seatMidPos.y,
+                clientX - seatMidPos.x
+            );
             const rotationAngleRad = dragDestAngleRad + Math.atan2(60 / 2, 100 / 2);
 
             onSeatPositionChange(seat.id, seat.x, seat.y, rotationAngleRad * 180 / Math.PI);

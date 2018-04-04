@@ -1,18 +1,23 @@
 import React from 'react';
-import * as d3 from 'd3';
+import { Chart } from 'chart.js';
 
-const dataset = [
-    { label: 'Abulia', count: 10 },
-    { label: 'Betelgeuse', count: 20 },
-    { label: 'Cantaloupe', count: 30 },
-    { label: 'Dijkstra', count: 40 }
+const backgroundColor = [
+    'rgba(255, 99, 132, 0.2)',
+    'rgba(54, 162, 235, 0.2)',
+    'rgba(255, 206, 86, 0.2)',
+    'rgba(75, 192, 192, 0.2)',
+    'rgba(153, 102, 255, 0.2)',
+    'rgba(255, 159, 64, 0.2)',
 ];
 
-const color = d3.scaleOrdinal(d3.schemeCategory20b);
-
-const CHART_WIDTH = 900;
-const CHART_HEIGHT = 300;
-const CHART_RADIUS = 100;
+const borderColor = [
+    'rgba(255,99,132,1)',
+    'rgba(54, 162, 235, 1)',
+    'rgba(255, 206, 86, 1)',
+    'rgba(75, 192, 192, 1)',
+    'rgba(153, 102, 255, 1)',
+    'rgba(255, 159, 64, 1)',
+];
 
 function aggregateCount(dataArr) {
     const dataMap = {};
@@ -25,57 +30,53 @@ function aggregateCount(dataArr) {
         }
     }
 
-    return Object.keys(dataMap).map(key => { 
-        return { label: key, count: dataMap[key] };
-    });
+    return {
+        labels: Object.keys(dataMap),
+        data: Object.keys(dataMap).map(k => dataMap[k]),
+    };
 }
 
-function updateChart(dataset, plotArea) {
-    const arc = d3.arc()
-        .innerRadius(0)
-        .outerRadius(CHART_RADIUS);
-
-    const pie = d3.pie()
-        .value(d => d.count)
-        .sort(null);
-
-    const path = plotArea.selectAll('path')
-        .data(pie(dataset))
-        .enter()
-        .append('path')
-        .attr('d', arc)
-        .attr('fill', (d, i) => color(d.data.label))
-        .on('mouseover', d => {
-            console.log(d, d.label);
-    });
-}
-
-// TODO: make a StudentInfoChartContainer redux logic?
 export default class StudentInfoCharts extends React.Component {
     componentDidMount() {
-        this.chart = d3.select(this.refs.chart)
-            .append('svg')
-            .attr('width', CHART_WIDTH)
-            .attr('height', CHART_HEIGHT);
-            
-        this.chart.plotArea1 = this.chart.append("g")
-            .attr('transform', 'translate(' + (CHART_WIDTH / 2 - 300) +  ',' + (CHART_HEIGHT / 2) + ')');
-        this.chart.plotArea2 = this.chart.append("g")
-            .attr('transform', 'translate(' + (CHART_WIDTH / 2) +  ',' + (CHART_HEIGHT / 2) + ')');
+        this.canvas = this.refs.chartCanvas;
+        this.ctx = this.canvas.getContext('2d');
+
+        this.pieChart = new Chart(this.ctx, {
+            type: 'pie',
+            data: {
+                labels: [],//chartData.labels,//["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+                datasets: [{
+                    label: 'label',
+                    data: [],//chartData.data,
+                    backgroundColor,
+                    borderColor,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                events: ['click'],
+                animation: false,
+                responsive: false,
+                onClick: (evt, chartElement) => {
+                }
+            }
+        });
+    }
+
+    updateChart(chartData) {
+        this.pieChart.data.labels = chartData.labels;
+        this.pieChart.data.datasets[0].data = chartData.data;
+        this.pieChart.update();
     }
 
     componentWillReceiveProps(nextProps) {
         const topicDataSet = aggregateCount(nextProps.students.map(s => s.storyTopic));
-        const contextDataSet = aggregateCount(nextProps.students.map(s => s.storyContext));
-
-        updateChart(topicDataSet, this.chart.plotArea1);
-        updateChart(contextDataSet, this.chart.plotArea2);
+        this.updateChart(topicDataSet);
     }
 
     render() {
         return (
-            <div ref='chart' className='student-info-charts'>
-            </div>
-        );
+            <canvas ref="chartCanvas" width="300" height="300"></canvas>
+        )
     }
 }

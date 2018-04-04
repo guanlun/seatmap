@@ -29,9 +29,28 @@ for (let i = 0; i < 5; i++) {
     for (let j = 0; j < 3; j++) {
         seatTemplates.rows.push({
             id: seatTemplates.rows.length,
-            x: 20 + 150 * i,
-            y: 20 + 100 * j,
+            x: 100 + 150 * i,
+            y: 100 + 100 * j,
             rotation: 0,
         });
     }
+}
+
+const numSeatsInCircle = 15;
+for (let i = 0; i < numSeatsInCircle; i++) {
+    const rad = i / numSeatsInCircle * Math.PI * 2;
+
+    const center = {
+        x: 400,
+        y: 400,
+    };
+
+    const radius = 300;
+
+    seatTemplates.circle.push({
+        id: seatTemplates.circle.length,
+        x: center.x + radius * Math.sin(rad),
+        y: center.y - radius * Math.cos(rad),
+        rotation: rad * 180 / Math.PI,
+    });
 }
