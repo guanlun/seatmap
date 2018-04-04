@@ -2,23 +2,22 @@ import React from 'react';
 import { Chart } from 'chart.js';
 import { CHART_TYPE } from '../constants';
 
-const backgroundColor = [
-    'rgba(255, 99, 132, 0.2)',
-    'rgba(54, 162, 235, 0.2)',
-    'rgba(255, 206, 86, 0.2)',
-    'rgba(75, 192, 192, 0.2)',
-    'rgba(153, 102, 255, 0.2)',
-    'rgba(255, 159, 64, 0.2)',
+const colors = [
+    [ 255, 99, 132 ],
+    [ 54, 162, 235 ],
+    [ 255, 206, 86 ],
+    [ 75, 192, 192 ],
+    [ 153, 102, 255 ],
+    [ 255, 159, 64 ],
 ];
 
-const borderColor = [
-    'rgba(255,99,132,1)',
-    'rgba(54, 162, 235, 1)',
-    'rgba(255, 206, 86, 1)',
-    'rgba(75, 192, 192, 1)',
-    'rgba(153, 102, 255, 1)',
-    'rgba(255, 159, 64, 1)',
-];
+function shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
 
 function aggregateCount(dataArr) {
     const dataMap = {};
@@ -46,6 +45,11 @@ export default class StudentInfoCharts extends React.Component {
     createPieChart(chartType, canvas) {
         const { onAreaSelect } = this.props;
 
+        const chartColors = shuffle(colors);
+
+        const backgroundColor = chartColors.map(c => `rgba(${c.join(',')},0.2)`);
+        const borderColor = chartColors.map(c => `rgb(${c.join(',')})`);
+
         const ctx = canvas.getContext('2d');
         return new Chart(ctx, {
             type: 'pie',
@@ -60,14 +64,26 @@ export default class StudentInfoCharts extends React.Component {
                 }]
             },
             options: {
+                title: {
+                    display: true,
+                    fontSize: 16,
+                    text: chartType,
+                },
+                legend: {
+                    position: 'right',
+                },
                 events: ['click'],
+                animation: false,
                 responsive: false,
                 onClick: (evt, chartElements, chart) => {
-                    // const chart = chartElements[0].
+                    if (chartElements.length !== 1) {
+                        return;
+                    }
+
                     const labels = chartElements[0]._chart.data.labels;
                     const chartIndex = chartElements[0]._index;
 
-                    onAreaSelect(chartType, labels[chartIndex]);
+                    onAreaSelect(chartType, labels[chartIndex], borderColor[chartIndex]);
                 }
             }
         });
@@ -89,8 +105,8 @@ export default class StudentInfoCharts extends React.Component {
     render() {
         return (
             <div className="student-info-chart-container">
-                <canvas ref="topicDataCanvas" width="300" height="300"></canvas>
-                <canvas ref="contextDataCanvas" width="300" height="300"></canvas>
+                <canvas ref="topicDataCanvas" width="400" height="300"></canvas>
+                <canvas ref="contextDataCanvas" width="400" height="300"></canvas>
             </div>
         );
     }

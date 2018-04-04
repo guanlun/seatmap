@@ -5,6 +5,6 @@ export const SEAT_TEMPLATE_TYPE = {
 };
 
 export const CHART_TYPE = {
-    TOPIC: 'topic',
-    CONTEXT: 'context',
+    TOPIC: 'Topic',
+    CONTEXT: 'Context',
 };

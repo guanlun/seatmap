@@ -1,28 +1,41 @@
 import React from 'react';
 import { CHART_TYPE } from '../constants';
 
-const Seat = ({ seatSpec, seatedStudent, isSelected, onSelect, highlightedType, highlightedCategory }) => {
+function lowerCaseStartsWith(text, segment) {
+    return text.toLowerCase().indexOf(segment.toLowerCase()) === 0;
+}
+
+const Seat = ({ seatSpec, seatedStudent, isSelected, onSelect, nameFilter, highlightedType, highlightedCategory, highlightColor }) => {
     const classNames = ['seat'];
     if (isSelected) {
         classNames.push('selected');
-    }
-
-    if (seatedStudent) {
-        const { storyTopic, storyContext } = seatedStudent;
-
-        // console.log(highlightedType, highlightedCategory, )
-
-        if (highlightedType === CHART_TYPE.TOPIC && highlightedCategory === storyTopic) {
-            classNames.push('highlighted')
-        }
-    } else {
-        classNames.push('empty');
     }
 
     const elStyle = {
         left: seatSpec.position.x,
         top: seatSpec.position.y + 60,
     };
+
+    if (seatedStudent) {
+        const { storyTopic, storyContext } = seatedStudent;
+
+        if (
+            (highlightedType === CHART_TYPE.TOPIC && highlightedCategory === storyTopic) ||
+            (highlightedType === CHART_TYPE.CONTEXT && highlightedCategory === storyContext))
+        {
+            elStyle.backgroundColor = highlightColor;
+        }
+
+        if (nameFilter.length >= 1) {
+            const [ firstName, lastName ] = seatedStudent.name.split(' ');
+
+            if (lowerCaseStartsWith(firstName, nameFilter) || lowerCaseStartsWith(lastName, nameFilter)) {
+                elStyle.backgroundColor = highlightColor;
+            }
+        }
+    } else {
+        classNames.push('empty');
+    }
 
     return (
         <div className={classNames.join(' ')} style={elStyle} onClick={() => onSelect(seatSpec.id)}>
