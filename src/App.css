@@ -50,6 +50,10 @@
     background: green;
 }
 
+.seat.highlighted {
+    border: 1px solid red;
+}
+
 .student-detail {
     position: absolute;
     top: 0;
@@ -85,8 +89,8 @@
     font-weight: bold;
 }
 
-.student-info-charts {
-
+.student-info-chart-container {
+    display: flex;
 }
 
 .attendance-list {

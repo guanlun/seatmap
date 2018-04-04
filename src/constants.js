@@ -3,3 +3,8 @@ export const SEAT_TEMPLATE_TYPE = {
     CIRCLE: 'circle',
     TABLES: 'tables',
 };
+
+export const CHART_TYPE = {
+    TOPIC: 'topic',
+    CONTEXT: 'context',
+};

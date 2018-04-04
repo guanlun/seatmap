@@ -8,6 +8,15 @@ import { SERVER_IP } from '../config';
 const wsAddr = `ws://${SERVER_IP}:3002`;
 
 export default class Seats extends React.Component {
+    constructor() {
+        super();
+
+        this.state = {
+            highlightedType: undefined,
+            highlightedCategory: undefined,
+        };
+    }
+
     componentDidMount() {
         this.fetchSeats();
         // this.fetchStudentList();
@@ -42,7 +51,8 @@ export default class Seats extends React.Component {
     }
 
     render() {
-        const { seats, students, selectedSeat, onSeatSelect } = this.props;
+        const { seats, students, selectedSeat, onSeatSelect, onChartAreaSelect } = this.props;
+        const { highlightedType, highlightedCategory } = this.state;
 
         return (
             <div className='classroom'>
@@ -52,15 +62,25 @@ export default class Seats extends React.Component {
                         <Seat
                             key={seat.id}
                             isSelected={selectedSeat.id === seat.id}
+                            highlightedType={highlightedType}
+                            highlightedCategory={highlightedCategory}
                             seatSpec={seat}
                             seatedStudent={this._getStudentBySeat(students, seat.id)}
                             onSelect={onSeatSelect}/>
                     )}
                 </div>
                 <StudentDetail selectedStudent={students.find(s => s.seatId === selectedSeat.id)} />
-                <StudentInfoCharts students={students} />
+                <StudentInfoCharts students={students} onAreaSelect={this.handleChartAreaSelect.bind(this)} />
             </div>
         );
+    }
+
+    handleChartAreaSelect(chartType, selectedLabel) {
+        // console.log(chartType, selectedLabel)
+        this.setState({
+            highlightedType: chartType,
+            highlightedCategory: selectedLabel,
+        })
     }
 
     _getStudentBySeat(students, seatId) {

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Chart } from 'chart.js';
+import { CHART_TYPE } from '../constants';
 
 const backgroundColor = [
     'rgba(255, 99, 132, 0.2)',
@@ -38,16 +39,21 @@ function aggregateCount(dataArr) {
 
 export default class StudentInfoCharts extends React.Component {
     componentDidMount() {
-        this.canvas = this.refs.chartCanvas;
-        this.ctx = this.canvas.getContext('2d');
+        this.topicChart = this.createPieChart(CHART_TYPE.TOPIC, this.refs.topicDataCanvas);
+        this.contextChart = this.createPieChart(CHART_TYPE.CONTEXT, this.refs.contextDataCanvas);
+    }
 
-        this.pieChart = new Chart(this.ctx, {
+    createPieChart(chartType, canvas) {
+        const { onAreaSelect } = this.props;
+
+        const ctx = canvas.getContext('2d');
+        return new Chart(ctx, {
             type: 'pie',
             data: {
-                labels: [],//chartData.labels,//["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+                labels: [],
                 datasets: [{
                     label: 'label',
-                    data: [],//chartData.data,
+                    data: [],
                     backgroundColor,
                     borderColor,
                     borderWidth: 1
@@ -55,28 +61,37 @@ export default class StudentInfoCharts extends React.Component {
             },
             options: {
                 events: ['click'],
-                animation: false,
                 responsive: false,
-                onClick: (evt, chartElement) => {
+                onClick: (evt, chartElements, chart) => {
+                    // const chart = chartElements[0].
+                    const labels = chartElements[0]._chart.data.labels;
+                    const chartIndex = chartElements[0]._index;
+
+                    onAreaSelect(chartType, labels[chartIndex]);
                 }
             }
         });
     }
 
-    updateChart(chartData) {
-        this.pieChart.data.labels = chartData.labels;
-        this.pieChart.data.datasets[0].data = chartData.data;
-        this.pieChart.update();
+    updateChart(chart, chartData) {
+        chart.data.labels = chartData.labels;
+        chart.data.datasets[0].data = chartData.data;
+        chart.update();
     }
 
     componentWillReceiveProps(nextProps) {
         const topicDataSet = aggregateCount(nextProps.students.map(s => s.storyTopic));
-        this.updateChart(topicDataSet);
+        const contextDataSet = aggregateCount(nextProps.students.map(s => s.storyContext));
+        this.updateChart(this.topicChart, topicDataSet);
+        this.updateChart(this.contextChart, contextDataSet);
     }
 
     render() {
         return (
-            <canvas ref="chartCanvas" width="300" height="300"></canvas>
-        )
+            <div className="student-info-chart-container">
+                <canvas ref="topicDataCanvas" width="300" height="300"></canvas>
+                <canvas ref="contextDataCanvas" width="300" height="300"></canvas>
+            </div>
+        );
     }
 }
