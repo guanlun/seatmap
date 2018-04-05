@@ -63,9 +63,6 @@ export default class Seats extends React.Component {
         const { seats, students, selectedSeat, onSeatSelect, onChartAreaSelect } = this.props;
         const { seatmaps, selectedSeatmap, nameFilter, highlightedType, highlightedCategory, highlightColor } = this.state;
 
-        if (selectedSeatmap) {
-            console.log(selectedSeatmap.seats)
-        }
         return (
             <div className='classroom'>
                 <div className='title-container'>

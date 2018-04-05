@@ -96,8 +96,8 @@ export default class StudentInfoCharts extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const topicDataSet = aggregateCount(nextProps.students.map(s => s.storyTopic));
-        const contextDataSet = aggregateCount(nextProps.students.map(s => s.storyContext));
+        const topicDataSet = aggregateCount(nextProps.students.map(s => s.homeworks[s.homeworks.length - 1].topic));
+        const contextDataSet = aggregateCount(nextProps.students.map(s => s.homeworks[s.homeworks.length - 1].context));
         this.updateChart(this.topicChart, topicDataSet);
         this.updateChart(this.contextChart, contextDataSet);
     }

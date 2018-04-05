@@ -18,7 +18,12 @@ const Seat = ({ seatSpec, seatedStudent, isSelected, onSelect, nameFilter, highl
     };
 
     if (seatedStudent) {
-        const { storyTopic, storyContext } = seatedStudent;
+        const { homeworks } = seatedStudent;
+
+        const lastHomework = seatedStudent.homeworks[seatedStudent.homeworks.length - 1]
+
+        const storyTopic = lastHomework.topic;
+        const storyContext = lastHomework.context;
 
         if (
             (highlightedType === CHART_TYPE.TOPIC && highlightedCategory === storyTopic) ||

@@ -7,6 +7,7 @@ const StudentDetail = ({ selectedStudent, onWritingCategorySelect }) => {
     if (!selectedStudent) {
         return <div className='student-detail hidden'></div>;
     } else {
+        const numHomeworks = selectedStudent.homeworks.length;
         return (
             <div className='student-detail'>
                 <div className='student-name student-detail-header'>
@@ -14,7 +15,12 @@ const StudentDetail = ({ selectedStudent, onWritingCategorySelect }) => {
                     <span>{selectedStudent.name}</span>
                 </div>
                 <PerformanceView studentPerformance={selectedStudent.performance} />
-                <WritingView writingSpec={selectedStudent} onCategorySelect={onWritingCategorySelect} />
+                {numHomeworks ?
+                    <WritingView
+                        writingSpec={selectedStudent.homeworks[numHomeworks - 1]}
+                        onCategorySelect={onWritingCategorySelect} />
+                    : null
+                }
             </div>
         );
     }

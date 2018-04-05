@@ -144,6 +144,8 @@ app.post('/submitWriting', (req, res) => {
             return;
         }
 
+        writingData.keywords = keywordExtractor.extract(writingData.writing, { language: 'english', remove_duplicates: true });
+
         mongodb.collection('students').updateOne({ _id: mongo.ObjectId(userId) }, {
             $push: {
                 homeworks: writingData,
