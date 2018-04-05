@@ -83,8 +83,8 @@ function loginUser(username, password) {
                     $set: {
                         token,
                     }
-                }, (err, res) => {
-                    if (res) {
+                }, (err, result) => {
+                    if (result) {
                         user.token = token;
                         resolve(user);
                     } else {
@@ -132,7 +132,6 @@ app.post('/submitWriting', (req, res) => {
     const { userId, userToken } = req.cookies;
 
     mongodb.collection('students').find(mongo.ObjectId(userId)).toArray((err, docs) => {
-        console.log(docs)
         if (docs.length !== 1) {
             res.send(JSON.stringify({ success: false }));
             return;
@@ -140,17 +139,24 @@ app.post('/submitWriting', (req, res) => {
 
         const student = docs[0];
 
-        console.log(student.token, userToken)
         if (student.token !== userToken) {
             res.send(JSON.stringify({ success: false }));
             return;
         }
 
-        console.log('haha')
-
-        res.send(JSON.stringify({
-            success: true,
-        }));
+        mongodb.collection('students').updateOne({ _id: mongo.ObjectId(userId) }, {
+            $push: {
+                homeworks: writingData,
+            },
+        }, (err, result) => {
+            if (result) {
+                res.send(JSON.stringify({
+                    success: true,
+                }));
+            } else {
+                res.send(JSON.stringify({ success: false }));
+            }
+        });
     });
 });
 
