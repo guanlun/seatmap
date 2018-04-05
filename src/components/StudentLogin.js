@@ -5,16 +5,14 @@ import { request } from './Utils';
 export default class StudentLogin extends React.Component {
     constructor() {
         super();
-        this.username = 'test';
-        this.password = 'test';
     }
 
     render() {
         return (
             <div>
                 <form onSubmit={this.login.bind(this)}>
-                    <input type='text' onChange={e => this.username = e.target.value} placeholder='username' />
-                    <input type='password' onChange={e => this.password = e.target.value} placeholder='password' />
+                    <input ref='usernameInput' type='text' onChange={e => this.username = e.target.value} placeholder='username' value='test_0' />
+                    <input ref='passwordInput' type='password' onChange={e => this.password = e.target.value} placeholder='password' value='test_0' />
                     <input type='submit' />
                 </form>
             </div>
@@ -28,8 +26,8 @@ export default class StudentLogin extends React.Component {
             endpoint: 'studentLogin',
             method: 'POST',
             payload: {
-                username: this.username,
-                password: this.password,
+                username: this.refs.usernameInput.value,
+                password: this.refs.passwordInput.value,
             },
         }).then((resData, err) => {
             if (err) {

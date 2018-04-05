@@ -12,8 +12,9 @@ const Seat = ({ seatSpec, seatedStudent, isSelected, onSelect, nameFilter, highl
     }
 
     const elStyle = {
-        left: seatSpec.position.x,
-        top: seatSpec.position.y + 60,
+        left: seatSpec.x,
+        top: seatSpec.y,
+        transform: `rotate(${seatSpec.rotation}deg)`,
     };
 
     if (seatedStudent) {

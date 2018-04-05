@@ -1,10 +1,12 @@
 const express = require('express');
 const WebSocket = require('ws');
-const MongoClient = require('mongodb').MongoClient;
+const mongo = require('mongodb');
 const bodyParser = require('body-parser');
 const shajs = require('sha.js');
 const cookieParser = require('cookie-parser');
 const keywordExtractor = require('keyword-extractor');
+
+const MongoClient = mongo.MongoClient;
 
 const app = express();
 const ws = new WebSocket.Server({ port: 3002 });
@@ -67,7 +69,7 @@ app.get('/students/', (req, res) => {
 
 function loginUser(username, password) {
     return new Promise((resolve, reject) => {
-        mongodb.collection('users').find({ username }).toArray((err, docs) => {
+        mongodb.collection('students').find({ username }).toArray((err, docs) => {
             if (docs.length !== 1) {
                 reject('username not found');
             }
@@ -77,12 +79,13 @@ function loginUser(username, password) {
             if (user.password === password) {
                 const token = generateUserToken();
 
-                mongodb.collection('users').updateOne({ username }, {
+                mongodb.collection('students').updateOne({ username }, {
                     $set: {
                         token,
                     }
                 }, (err, res) => {
                     if (res) {
+                        user.token = token;
                         resolve(user);
                     } else {
                         reject('login failed: server error');
@@ -107,7 +110,6 @@ function generateUserToken() {
 
 app.post('/studentLogin', (req, res) => {
     const reqData = JSON.parse(req.body);
-    console.log(req.cookies)
 
     loginUser(reqData.username, reqData.password).then((user, err) => {
         if (user) {
@@ -121,6 +123,34 @@ app.post('/studentLogin', (req, res) => {
                 err,
             }));
         }
+    });
+});
+
+app.post('/submitWriting', (req, res) => {
+    const reqData = req.body;
+    const writingData = JSON.parse(reqData);
+    const { userId, userToken } = req.cookies;
+
+    mongodb.collection('students').find(mongo.ObjectId(userId)).toArray((err, docs) => {
+        console.log(docs)
+        if (docs.length !== 1) {
+            res.send(JSON.stringify({ success: false }));
+            return;
+        }
+
+        const student = docs[0];
+
+        console.log(student.token, userToken)
+        if (student.token !== userToken) {
+            res.send(JSON.stringify({ success: false }));
+            return;
+        }
+
+        console.log('haha')
+
+        res.send(JSON.stringify({
+            success: true,
+        }));
     });
 });
 
@@ -183,6 +213,16 @@ app.get('/beginMockingStudents', (req, res) => {
 
     studentGeneratorInterval = setInterval(() => mockStudentLogin(webSocket), 500);
 
+    res.send(JSON.stringify({
+        success: true,
+    }));
+});
+
+app.listen(3001, () => console.log('Listening on port 3001!'));
+
+ws.on('connection', socket => {
+    webSocket = socket;
+
     webSocket.on('close', () => {
         console.log('websocket closed');
     });
@@ -193,13 +233,4 @@ app.get('/beginMockingStudents', (req, res) => {
         console.log('websocket error');
     });
 
-    res.send(JSON.stringify({
-        success: true,
-    }));
-});
-
-app.listen(3001, () => console.log('Listening on port 3001!'));
-
-ws.on('connection', socket => {
-    webSocket = socket;
 });

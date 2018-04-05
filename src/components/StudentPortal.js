@@ -1,5 +1,6 @@
 import React from 'react';
 import { request } from './Utils';
+import WritingSubmission from './WritingSubmission';
 
 function getCookieByName(name) {
     for (const pair of document.cookie.split(';')) {
@@ -13,14 +14,12 @@ function getCookieByName(name) {
 
 export default class StudentPortal extends React.Component {
     componentDidMount() {
-        const userId = getCookieByName('userId');
+        this.userId = getCookieByName('userId');
 
-        if (!userId) {
+        if (!this.userId) {
             window.location = '/studentlogin';
             return;
         }
-        this.getStudentInfo(userId);
-        
     }
 
     getStudentInfo(userId) {
@@ -35,7 +34,7 @@ export default class StudentPortal extends React.Component {
     render() {
         return (
             <div>
-                student portal
+                <WritingSubmission />
             </div>
         );
     }
