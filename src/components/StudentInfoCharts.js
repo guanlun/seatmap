@@ -52,7 +52,7 @@ export default class StudentInfoCharts extends React.Component {
 
         const ctx = canvas.getContext('2d');
         return new Chart(ctx, {
-            type: 'pie',
+            type: 'doughnut',
             data: {
                 labels: [],
                 datasets: [{

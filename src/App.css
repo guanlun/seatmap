@@ -146,6 +146,7 @@
 }
 
 .writing-body {
+    position: relative;
     margin-top: 12px;
     margin-left: 40px;
 }
@@ -154,13 +155,9 @@
     margin-left: 60px;
 }
 
-.seatmap-preview-scroller {
-    width: 100%;
-    overflow-x: scroll;
-}
-
 .seatmap-preview-list {
     display: flex;
+    flex-wrap: wrap;
 }
 
 .seatmap-preview-item {
@@ -175,7 +172,7 @@
 
 .seats-preview {
     position: relative;
-    width: 400px;
+    width: 380px;
     height: 250px;
     /* border: 1px #ccc solid; */
     overflow: hidden;
@@ -252,4 +249,26 @@
 .writing-submission-form-item {
     margin-bottom: 20px;
     font-size: 20px;
+}
+
+.common-keyword-container {
+    position: absolute;
+    background: black;
+    color: white;
+    padding: 15px;
+    width: 300px;
+    margin-left: -340px;
+    margin-top: -15px;
+    box-shadow: 0px 0px 3px black;
+}
+
+.common-keyword-container::after {
+    content: '';
+    position: absolute;
+    right: -10px;
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+	border-left: 10px solid black;
+	border-bottom: 10px solid transparent;
 }

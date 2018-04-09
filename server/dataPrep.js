@@ -1,5 +1,8 @@
 const MongoClient = require('mongodb').MongoClient;
 const keywordExtractor = require('keyword-extractor');
+const WordPOS = require('wordpos');
+
+const wordPos = new WordPOS();
 
 const DUMMY_NAMES = [
     'Fabian Button',
@@ -101,23 +104,28 @@ const students = [];
 for (let i = 0; i < 12; i++) {
     const keywords = keywordExtractor.extract(shuffledWritings[i], { language: 'english', remove_duplicates: true });
     const processedKeywords = keywords.map(w => w.replace(/\W+/g, ''));
-    students.push({
-        username: `test_${i}`,
-        password: `test_${i}`,
-        name: DUMMY_NAMES[i],
-        performance: generateRandomStudentPerformance(),
-        seatId: shuffledSeats[i].id,
-        homeworks: [{
-            topic: randomItem(DUMMY_TOPICS),
-            context: randomItem(DUMMY_CONTEXT),
-            writing: shuffledWritings[i],
-            keywords: processedKeywords,
-        }],
-        // storyTopic: randomItem(DUMMY_TOPICS),
-        // storyContext: randomItem(DUMMY_CONTEXT),
-        // storyText: loremIpsum({
-        //     count: 5,
-        // })
+
+    wordPos.getNouns(processedKeywords.join(' '), nounKeywords => {
+        // wordPos.getVerbs(processedKeywords.join(' '), verbKeywords => {
+        //     for (const verb of verbKeywords) {
+        //         const vIndex = nounKeywords.indexOf(verb);
+        //         nounKeywords.splice(vIndex, 1);
+        //     }
+
+            students.push({
+                username: `test_${i}`,
+                password: `test_${i}`,
+                name: DUMMY_NAMES[i],
+                performance: generateRandomStudentPerformance(),
+                seatId: shuffledSeats[i].id,
+                homeworks: [{
+                    topic: randomItem(DUMMY_TOPICS),
+                    context: randomItem(DUMMY_CONTEXT),
+                    writing: shuffledWritings[i],
+                    keywords: nounKeywords,
+                }],
+            });
+        // });
     });
 }
 

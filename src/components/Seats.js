@@ -36,6 +36,9 @@ export default class Seats extends React.Component {
             const studentInfo = JSON.parse(msg.data);
             this.props.onStudentAdd(studentInfo);
         }
+
+        // TODO: delete:
+        this.handleMockStudentButtonClick();
     }
 
     fetchSeats() {
@@ -47,7 +50,7 @@ export default class Seats extends React.Component {
             this.setState({
                 seatmaps,
             })
-        })
+        });
     }
 
     fetchStudentList() {
@@ -101,21 +104,19 @@ export default class Seats extends React.Component {
                         </div>
                         <StudentDetail
                             selectedStudent={students.find(s => s.seatId === selectedSeat.id)}
+                            students={students}
                             onWritingCategorySelect={this.handleWritingCategorySelect.bind(this)} />
                         <StudentInfoCharts students={students} onAreaSelect={this.handleChartAreaSelect.bind(this)} />
                     </div>
                     :
                     <div className='seatmap-preview-container'>
-                        <div>Seatmap Previews</div>
-                        <div className='seatmap-preview-scroller'>
-                            <div className='seatmap-preview-list'>
-                                {seatmaps.map((seatmap, idx) =>
-                                    <SeatmapPreview
-                                        key={`seatmap_${idx}`}
-                                        seatmap={seatmap}
-                                        onSelect={this.handleSeatmapSelect.bind(this)} />
-                                )}
-                            </div>
+                        <div className='seatmap-preview-list'>
+                            {seatmaps.map((seatmap, idx) =>
+                                <SeatmapPreview
+                                    key={`seatmap_${idx}`}
+                                    seatmap={seatmap}
+                                    onSelect={this.handleSeatmapSelect.bind(this)} />
+                            )}
                         </div>
                     </div>
                 }

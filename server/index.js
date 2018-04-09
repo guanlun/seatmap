@@ -5,7 +5,8 @@ const bodyParser = require('body-parser');
 const shajs = require('sha.js');
 const cookieParser = require('cookie-parser');
 const keywordExtractor = require('keyword-extractor');
-
+const stopwords = [ "a", "about", "above", "after", "again", "against", "all", "am", "an", "and", "any", "are", "aren't", "as", "at", "be", "because", "been", "before", "being", "below", "between", "both", "but", "by", "can't", "cannot", "could", "couldn't", "did", "didn't", "do", "does", "doesn't", "doing", "don't", "down", "during", "each", "few", "for", "from", "further", "had", "hadn't", "has", "hasn't", "have", "haven't", "having", "he", "he'd", "he'll", "he's", "her", "here", "here's", "hers", "herself", "him", "himself", "his", "how", "how's", "i", "i'd", "i'll", "i'm", "i've", "if", "in", "into", "is", "isn't", "it", "it's", "its", "itself", "let's", "me", "more", "most", "mustn't", "my", "myself", "no", "nor", "not", "of", "off", "on", "once", "only", "or", "other", "ought", "our", "ours", "ourselves", "out", "over", "own", "same", "shan't", "she", "she'd", "she'll", "she's", "should", "shouldn't", "so", "some", "such", "than", "that", "that's", "the", "their", "theirs", "them", "themselves", "then", "there", "there's", "these", "they", "they'd", "they'll", "they're", "they've", "this", "those", "through", "to", "too", "under", "until", "up", "very", "was", "wasn't", "we", "we'd", "we'll", "we're", "we've", "were", "weren't", "what", "what's", "when", "when's", "where", "where's", "which", "while", "who", "who's", "whom", "why", "why's", "with", "won't", "would", "wouldn't", "you", "you'd", "you'll", "you're", "you've", "your", "yours", "yourself", "yourselves" ];
+const WordPOS = require('wordpos');
 const MongoClient = mongo.MongoClient;
 
 const app = express();
@@ -20,6 +21,8 @@ let students = [];
 let webSocket = null;
 
 let mockStudentIndex = 0;
+
+const wordPos = new WordPOS();
 
 function mockStudentLogin(ws) {
     console.log(mockStudentIndex)
@@ -126,6 +129,77 @@ app.post('/studentLogin', (req, res) => {
     });
 });
 
+function textToWords(text) {
+    return text.toLowerCase().split(' ').map(w => w.replace(/\W+/, '')).filter(w => stopwords.indexOf(w) === -1);
+}
+
+function wordTfIdf(word, text, wordCollections) {
+    const numCollections = wordCollections.length;
+
+    let termCount = 0;
+    for (const w of text) {
+        if (word === w) {
+            termCount++;
+        }
+    }
+
+    let docCount = 0;
+    for (const c of wordCollections) {
+        if (c.indexOf(word) !== -1) {
+            docCount++;
+        }
+    }
+
+    const tf = Math.log(1 + termCount / text.length);
+    // const idf = Math.log(numCollections / docCount);
+
+    return tf;
+}
+
+function extractKeywords() {
+    mongodb.collection('students').find({}).toArray((err, students) => {
+        const allHomeworks = students.map(s => s.homeworks);
+        const wordCollections = allHomeworks.reduce((a, b) => a.concat(b)).map(h => textToWords(h.writing));
+
+        const tfidfLookup = {};
+
+        for (const text of wordCollections) {
+            const countedWords = {};
+
+            for (const word of text) {
+                if (countedWords[word] === undefined) {
+                    const tfidf = wordTfIdf(word, text, wordCollections);
+                    countedWords[word] = true;
+
+                    if (tfidfLookup[word] === undefined) {
+                        tfidfLookup[word] = tfidf;
+                    } else {
+                        tfidfLookup[word] += tfidf;
+                    }
+                }
+            }
+        }
+
+        const tfidfPairs = Object.keys(tfidfLookup).map(k => ({ term: k, val: tfidfLookup[k] })).sort((a, b) => a.val - b.val);
+        const keywords = tfidfPairs.map(p => p.term);
+
+        wordPos.getNouns(keywords.join(' '), nounKeywords => {
+            wordPos.getVerbs(keywords.join(' '), verbKeywords => {
+                for (const verb of verbKeywords) {
+                    const vIndex = nounKeywords.indexOf(verb);
+                    nounKeywords.splice(vIndex, 1);
+                }
+
+                mongodb.collection('keywords').update({}, {
+                    $set: {
+                        keywords: nounKeywords,
+                    },
+                });
+            })
+        });
+    });
+}
+
 app.post('/submitWriting', (req, res) => {
     const reqData = req.body;
     const writingData = JSON.parse(reqData);
@@ -144,20 +218,27 @@ app.post('/submitWriting', (req, res) => {
             return;
         }
 
-        writingData.keywords = keywordExtractor.extract(writingData.writing, { language: 'english', remove_duplicates: true });
+        // extractKeywords();
 
-        mongodb.collection('students').updateOne({ _id: mongo.ObjectId(userId) }, {
-            $push: {
-                homeworks: writingData,
-            },
-        }, (err, result) => {
-            if (result) {
-                res.send(JSON.stringify({
-                    success: true,
-                }));
-            } else {
-                res.send(JSON.stringify({ success: false }));
-            }
+        const keywords = keywordExtractor.extract(writingData.writing, { language: 'english', remove_duplicates: true });
+
+        wordPos.getNouns(keywords.join(' '), nounKeywords => {
+            // TODO: filter out verb keywords
+            writing.keywords = nounKeywords;
+
+            mongodb.collection('students').updateOne({ _id: mongo.ObjectId(userId) }, {
+                $push: {
+                    homeworks: writingData,
+                },
+            }, (err, result) => {
+                if (result) {
+                    res.send(JSON.stringify({
+                        success: true,
+                    }));
+                } else {
+                    res.send(JSON.stringify({ success: false }));
+                }
+            });
         });
     });
 });
@@ -171,14 +252,15 @@ app.get('/studentInfo', (req, res) => {
 });
 
 app.get('/keywords', (req, res) => {
-    const texts = students.map(s => s.storyText);
+    mongodb.collection('keywords').find({}).toArray((err, docs) => {
+        if (docs.length !== 1) {
+            res.send(JSON.stringify({
+                success: false,
+            }));
+        }
 
-    const allText = texts.join(' ');
-
-    const keywords = keywordExtractor.extract(allText, { language: 'english', remove_duplicates: true });
-    console.log(keywords)
-
-    res.send('ok');
+        res.send(JSON.stringify(docs[0].keywords));
+    });
 });
 
 app.get('/getSeatmaps', (req, res) => {
