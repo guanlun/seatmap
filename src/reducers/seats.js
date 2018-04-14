@@ -3,7 +3,6 @@ const seats = (state = [], action) => {
         case 'SET_SEAT_DATA':
             return action.data;
         case 'SEATMAP_LOADED':
-            console.log(action)
             return state;
     }
 

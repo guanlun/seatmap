@@ -25,7 +25,6 @@ let mockStudentIndex = 0;
 const wordPos = new WordPOS();
 
 function mockStudentLogin(ws) {
-    console.log(mockStudentIndex)
     if (mockStudentIndex === students.length) {
         clearInterval(studentGeneratorInterval);
         return;

@@ -3,7 +3,7 @@ import PerformanceView from './PerformanceView';
 import WritingView from './WritingView';
 import FaUser from 'react-icons/lib/fa/user';
 
-const StudentDetail = ({ selectedStudent, students, onWritingCategorySelect }) => {
+const StudentDetail = ({ selectedStudent, students, onWritingCategorySelect, onCommonWordSelect }) => {
     if (!selectedStudent) {
         return <div className='student-detail hidden'></div>;
     } else {
@@ -19,7 +19,8 @@ const StudentDetail = ({ selectedStudent, students, onWritingCategorySelect }) =
                     <WritingView
                         writingSpec={selectedStudent.homeworks[numHomeworks - 1]}
                         students={students}
-                        onCategorySelect={onWritingCategorySelect} />
+                        onCategorySelect={onWritingCategorySelect}
+                        onCommonWordSelect={onCommonWordSelect} />
                     : null
                 }
             </div>

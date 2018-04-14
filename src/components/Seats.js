@@ -105,7 +105,8 @@ export default class Seats extends React.Component {
                         <StudentDetail
                             selectedStudent={students.find(s => s.seatId === selectedSeat.id)}
                             students={students}
-                            onWritingCategorySelect={this.handleWritingCategorySelect.bind(this)} />
+                            onWritingCategorySelect={this.handleWritingCategorySelect.bind(this)}
+                            onCommonWordSelect={this.handleCommonWordSelect.bind(this)} />
                         <StudentInfoCharts students={students} onAreaSelect={this.handleChartAreaSelect.bind(this)} />
                     </div>
                     :
@@ -122,6 +123,11 @@ export default class Seats extends React.Component {
                 }
             </div>
         );
+    }
+
+    handleCommonWordSelect(student) {
+        const { onSeatSelect } = this.props;
+        onSeatSelect(student.seatId);
     }
 
     handleSeatmapSelect(seatmap) {
