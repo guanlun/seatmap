@@ -10,11 +10,25 @@
 .seat-designer-title {
     text-align: center;
     font-size: 20px;
+    margin-bottom: 20px;
 }
 
 .seat-template-options {
     display: flex;
     align-items: center;
+}
+
+.seat-designer-save-btn {
+    margin: 0 20px;
+}
+
+.seat-designer-save-btn {
+    color: #39d;
+    cursor: pointer;
+}
+
+.seat-designer-save-btn > svg:hover {
+    color: #159;
 }
 
 .seat-template-item {

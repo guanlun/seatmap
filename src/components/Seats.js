@@ -134,7 +134,7 @@ export default class Seats extends React.Component {
     handleSeatmapSelect(seatmap) {
         this.setState({
             selectedSeatmap: seatmap,
-            seatAreaHeight: Math.max(...seatmap.seats.map(s => s.y)) + 50,
+            seatAreaHeight: Math.max(...seatmap.seats.map(s => s.y)),
         });
     }
 

@@ -4,6 +4,7 @@ import SeatArea from './SeatArea';
 import '../SeatDesigner.css';
 import { SEAT_TEMPLATE_TYPE } from '../constants';
 import { request, generateCircleSeatmap, generateRowSeatmap } from './Utils';
+import FaFloppyO from 'react-icons/lib/fa/floppy-o';
 
 export default class SeatDesigner extends React.Component {
     constructor() {
@@ -120,6 +121,9 @@ export default class SeatDesigner extends React.Component {
                 <div className="seat-designer-header">
                     <div className="seat-designer-title">Seat Designer</div>
                     <div className="seat-template-options">
+                        <div className="seat-designer-save-btn" onClick={this.handleSeatMapSaveBtnClick.bind(this)}>
+                            <FaFloppyO size={32}/>
+                        </div>
                         <div>Templates:</div>
                         <div
                             className="seat-template-item"
@@ -153,9 +157,6 @@ export default class SeatDesigner extends React.Component {
                             Tables
                         </div>
                     </div>
-                    <button className="seat-designer-save-btn" onClick={this.handleSeatMapSaveBtnClick.bind(this)}>
-                        Save Seatmap
-                    </button>
                     <div className="seatmap-edit-container">
                         {/* <div className="existing-seatmap-list">
                             Existing seatmaps:
