@@ -14,20 +14,23 @@
 
 .seat-template-options {
     display: flex;
+    align-items: center;
 }
 
 .seat-template-item {
     width: 150px;
     padding: 4px;
     text-align: center;
-    border: 1px black solid;
+    /* border: 1px black solid; */
     cursor: pointer;
     margin-left: 10px;
     border-radius: 16px;
+    background: white;
+    box-shadow: 0 0 4px #666;
 }
 
 .seat-template-item:hover {
-    background: white;
+    /* background: white; */
 }
 
 .seat-template-item.selected {
@@ -41,6 +44,7 @@
     padding: 10px;
     box-shadow: 0 0 4px #666;
     visibility: hidden;
+    margin-top: 5px;
 }
 
 .seat-template-item:hover .designer-dropdown {
@@ -68,6 +72,10 @@
     color: #666;
 }
 
+.designer-dropdown-selection.row {
+    display: flex;
+}
+
 .seatmap-edit-container {
     display: flex;
 }
@@ -86,13 +94,17 @@
 
 .seat-item {
     position: absolute;
-    width: 100px;
-    height: 60px;
-    margin-left: -50px;
-    margin-top: -30px;
+    width: 80px;
+    height: 50px;
+    margin-left: -40px;
+    margin-top: -25px;
     border: 4px #07575b solid;
     border-radius: 8px;
     cursor: move;
+}
+
+.seat-item.selected {
+    border-color: red;
 }
 
 .seat-rotator {

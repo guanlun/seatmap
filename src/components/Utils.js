@@ -41,22 +41,26 @@ export function generateRowSeatmap(height, width) {
     return seats;
 }
 
+export function generateCircleSeatmap(numSeatsInCircle) {
+    const seats = [];
 
-const numSeatsInCircle = 15;
-for (let i = 0; i < numSeatsInCircle; i++) {
-    const rad = i / numSeatsInCircle * Math.PI * 2;
+    for (let i = 0; i < numSeatsInCircle; i++) {
+        const rad = i / numSeatsInCircle * Math.PI * 2;
 
-    const center = {
-        x: 400,
-        y: 400,
-    };
+        const center = {
+            x: 400,
+            y: 400,
+        };
 
-    const radius = 300;
+        const radius = 300;
 
-    seatTemplates.circle.push({
-        id: seatTemplates.circle.length,
-        x: center.x + radius * Math.sin(rad),
-        y: center.y - radius * Math.cos(rad),
-        rotation: rad * 180 / Math.PI,
-    });
+        seats.push({
+            id: seats.length,
+            x: center.x + radius * Math.sin(rad),
+            y: center.y - radius * Math.cos(rad),
+            rotation: rad * 180 / Math.PI,
+        });
+    }
+
+    return seats;
 }

@@ -15,8 +15,7 @@ export default class SeatArea extends React.Component {
     }
 
     render() {
-        const { seats } = this.props;
-
+        const { seats, selectedSeat } = this.props;
         return (
             <div
                 ref="seatArea"
@@ -25,9 +24,10 @@ export default class SeatArea extends React.Component {
                 onMouseUp={evt => this.handleSeatAreaMouseUp()}>
                 {seats.map((seat, idx) =>
                     <div
-                        className="seat-item"
+                        className={`seat-item ${selectedSeat && (selectedSeat.id === seat.id) ? 'selected' : ''}`}
                         style={{ left: seat.x, top: seat.y, transform: `rotate(${seat.rotation}deg)` }}
                         key={seat.id}
+                        onClick={evt => this.handleSeatClick(seat)}
                         onMouseDown={evt => this.handleSeatMouseDown(evt, seat)}>
                         <div
                             className="seat-rotator"
@@ -38,6 +38,11 @@ export default class SeatArea extends React.Component {
                 )}
             </div>
         );
+    }
+
+    handleSeatClick(seat) {
+        const { onSeatSelect } = this.props;
+        onSeatSelect(seat);
     }
 
     handleSeatMouseDown(evt, seat) {
