@@ -25,16 +25,22 @@ export const seatTemplates = {
     tables: [],
 };
 
-for (let i = 0; i < 5; i++) {
-    for (let j = 0; j < 3; j++) {
-        seatTemplates.rows.push({
-            id: seatTemplates.rows.length,
-            x: 100 + 150 * i,
-            y: 100 + 100 * j,
-            rotation: 0,
-        });
+export function generateRowSeatmap(height, width) {
+    const seats = [];
+    for (let i = 0; i < width; i++) {
+        for (let j = 0; j < height; j++) {
+            seats.push({
+                id: seats.length,
+                x: 100 + 150 * i,
+                y: 100 + 100 * j,
+                rotation: 0,
+            });
+        }
     }
+
+    return seats;
 }
+
 
 const numSeatsInCircle = 15;
 for (let i = 0; i < numSeatsInCircle; i++) {

@@ -1,4 +1,5 @@
 import React from 'react';
+import FaRotateLeft from 'react-icons/lib/fa/rotate-left';
 
 const SEAT_WIDTH = 100;
 const SEAT_HEIGHT = 60;
@@ -31,6 +32,7 @@ export default class SeatArea extends React.Component {
                         <div
                             className="seat-rotator"
                             onMouseDown={evt => this.handleSeatRotatorMouseDown(evt, seat)}>
+                            <FaRotateLeft size={16} />
                         </div>
                     </div>
                 )}

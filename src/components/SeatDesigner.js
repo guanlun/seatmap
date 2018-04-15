@@ -3,7 +3,7 @@ import update from 'react-addons-update';
 import SeatArea from './SeatArea';
 import '../SeatDesigner.css';
 import { SEAT_TEMPLATE_TYPE } from '../constants';
-import { request, seatTemplates } from './Utils';
+import { request, seatTemplates, generateRowSeatmap } from './Utils';
 
 export default class SeatDesigner extends React.Component {
     constructor() {
@@ -15,6 +15,8 @@ export default class SeatDesigner extends React.Component {
             seats: [],
             seatmapsLoaded: false,
             existingSeatmaps: [],
+            rowTemplateMenuHoveredRowIdx: 0,
+            rowTemplateMenuHoveredColIdx: 0,
         };
     }
 
@@ -37,6 +39,19 @@ export default class SeatDesigner extends React.Component {
 
             this.setState(newState);
         });
+
+        document.addEventListener('keydown', evt => {
+            switch (evt.keyCode) {
+            case 8: // delete key
+
+                break;
+            case 90:
+                if (evt.metaKey) {
+
+                }
+                break;
+            }
+        });
     }
 
     render() {
@@ -50,10 +65,32 @@ export default class SeatDesigner extends React.Component {
             seatmapsLoaded,
             existingSeatmaps,
             shouldShowSeatmapNameModal,
+            rowTemplateMenuHoveredRowIdx,
+            rowTemplateMenuHoveredColIdx,
         } = this.state;
 
+        const rowsTemplateMenu = [];
+
+        for (let rowIdx = 0; rowIdx < 8; rowIdx++) {
+            const rowsTemplateMenuRow = [];
+            for (let colIdx = 0; colIdx < 8; colIdx++) {
+                const isActive = rowIdx <= rowTemplateMenuHoveredRowIdx && colIdx <= rowTemplateMenuHoveredColIdx;
+                rowsTemplateMenuRow.push(
+                    <div
+                        key={`rows-template-menu-item-${rowIdx}-${colIdx}`}
+                        className={`rows-template-menu-item ${isActive ? 'active' : ''}`}
+                        onMouseOver={() => this.handleRowTemplateMenuItemHover(rowIdx, colIdx)}
+                        onClick={() => this.handleRowTemplateMenuItemClick(rowIdx, colIdx)}>
+                    </div>
+                )
+            }
+            rowsTemplateMenu.push(
+                <div key={`row-template-menu-row-${rowIdx}`} className="rows-template-menu-row">{rowsTemplateMenuRow}</div>
+            );
+        }
+
         return (
-            <div>
+            <div className="seat-designer">
                 {shouldShowSeatmapNameModal ? <div className="seatmap-name-overlay">
                     <div className="seatmap-name-modal">
                         <div className="seatmap-name-label">Seatmap name:</div>
@@ -65,10 +102,19 @@ export default class SeatDesigner extends React.Component {
                 <div className="seat-designer-header">
                     <div className="seat-designer-title">Seat Designer</div>
                     <div className="seat-template-options">
+                        <div>Templates:</div>
                         <div
                             className="seat-template-item"
                             onClick={() => this.handleSeatTemplateClick(SEAT_TEMPLATE_TYPE.ROWS)}>
                             Rows
+                            <div className="designer-dropdown">
+                                <div className="designer-dropdown-text">
+                                    {`${rowTemplateMenuHoveredRowIdx + 1} x ${rowTemplateMenuHoveredColIdx + 1}`}
+                                </div>
+                                <div className="designer-dropdown-selection">
+                                    {rowsTemplateMenu}
+                                </div>
+                            </div>
                         </div>
                         <div
                             className="seat-template-item"
@@ -84,24 +130,42 @@ export default class SeatDesigner extends React.Component {
                     <button className="seat-designer-save-btn" onClick={this.handleSeatMapSaveBtnClick.bind(this)}>
                         Save Seatmap
                     </button>
-                    <div className="existing-seatmap-list">
-                        Existing seatmaps:
-                        {existingSeatmaps.map(seatmap => (
-                            <div key={seatmap._id} className="existing-seatmap-item" onClick={() => this.handleExistingSeatmapClick(seatmap)}>Seat Map</div>
-                        ))}
-                    </div>
+                    <div className="seatmap-edit-container">
+                        {/* <div className="existing-seatmap-list">
+                            Existing seatmaps:
+                            {existingSeatmaps.map(seatmap => (
+                                <div key={seatmap._id} className="existing-seatmap-item" onClick={() => this.handleExistingSeatmapClick(seatmap)}>Seat Map</div>
+                            ))}
+                        </div> */}
 
-                    <SeatArea seats={seats} onSeatPositionChange={this.handleSeatPositionChange.bind(this)} />
+                        <SeatArea seats={seats} onSeatPositionChange={this.handleSeatPositionChange.bind(this)} />
+                    </div>
                 </div>
             </div>
         );
     }
 
-    handleSeatTemplateClick(templateType) {
+    handleRowTemplateMenuItemHover(rowIdx, colIdx) {
+        this.setState({
+            rowTemplateMenuHoveredRowIdx: rowIdx,
+            rowTemplateMenuHoveredColIdx: colIdx,
+        });
+    }
+
+    handleRowTemplateMenuItemClick(rowIdx, colIdx) {
+        const seats = generateRowSeatmap(rowIdx + 1, colIdx + 1);
         this.setState({
             seatmapName: undefined,
-            seats: seatTemplates[templateType],
+            seats,
         });
+    }
+
+    handleSeatTemplateClick(templateType) {
+        // console.log(seatTemplates[templateType])
+        // this.setState({
+        //     seatmapName: undefined,
+        //     seats: seatTemplates[templateType],
+        // });
     }
 
     handleExistingSeatmapClick(seatmap) {
@@ -149,6 +213,8 @@ export default class SeatDesigner extends React.Component {
     }
 
     handleSeatPositionChange(seatId, x, y, rotation) {
+        this.saveCurrentSeatmapState();
+
         const { seats } = this.state;
         const seatIdx = seats.findIndex(seat => seat.id === seatId);
         const origSeat = seats[seatIdx];

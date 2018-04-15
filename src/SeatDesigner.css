@@ -1,3 +1,8 @@
+.seat-designer {
+    background-color: #c4dfe6;
+    padding: 20px;
+}
+
 .seat-designer-header {
 
 }
@@ -5,39 +10,78 @@
 .seat-designer-title {
     text-align: center;
     font-size: 20px;
-    margin: 20px;
 }
 
 .seat-template-options {
-    border-radius: 4px;
-    border: 1px black solid;
+    display: flex;
 }
 
 .seat-template-item {
     width: 150px;
-    height: 30px;
+    padding: 4px;
     text-align: center;
-    border-right: 1px black solid;
+    border: 1px black solid;
     cursor: pointer;
+    margin-left: 10px;
+    border-radius: 16px;
+}
+
+.seat-template-item:hover {
+    background: white;
 }
 
 .seat-template-item.selected {
     background: #aaa;
 }
 
-.seat-template-item:last-child {
-    border-right: none;
+.designer-dropdown {
+    z-index: 1;
+    position: absolute;
+    background: white;
+    padding: 10px;
+    box-shadow: 0 0 4px #666;
+    visibility: hidden;
 }
 
-.existing-seatmap-container {
+.seat-template-item:hover .designer-dropdown {
+    visibility: visible;
+}
+
+.rows-template-menu-row {
+    display: flex;
+}
+
+.rows-template-menu-item {
+    width: 20px;
+    height: 20px;
+    margin: 2px;
+    border: 2px #aaa solid;
+    border-radius: 4px;
+}
+
+.rows-template-menu-item.active {
+    background: #ccc;
+}
+
+.designer-dropdown-text {
+    font-size: 12px;
+    color: #666;
+}
+
+.seatmap-edit-container {
+    display: flex;
+}
+
+.existing-seatmap-list {
+    width: 300px;
 }
 
 .seat-area {
     position: relative;
     flex-basis: 100%;
-    width: 1000px;
-    height: 1000px;
-    background: #ddd;
+    width: 100%;
+    height: 800px;
+    /* background: #66a5ad; */
 }
 
 .seat-item {
@@ -46,7 +90,8 @@
     height: 60px;
     margin-left: -50px;
     margin-top: -30px;
-    border: 1px black solid;
+    border: 4px #07575b solid;
+    border-radius: 8px;
     cursor: move;
 }
 
@@ -57,13 +102,12 @@
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    border: 2px black solid;
-    display: none;
+    visibility: hidden;
     cursor: grab;
 }
 
 .seat-item:hover .seat-rotator {
-    display: block;
+    visibility: visible;
 }
 
 .seatmap-name-overlay {
