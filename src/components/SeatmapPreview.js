@@ -30,13 +30,13 @@ export default class SeatmapPreview extends React.Component {
                     </div>
                 </div>
                 <div className="seatmap-preview-edit-button">
-                    <FaEdit size="24" onClick={this.handleEditButtonClick.bind(this)} />
+                    <FaEdit size="24" onClick={() => this.handleEditButtonClick(seatmap._id)} />
                 </div>
             </div>
         )
     }
 
-    handleEditButtonClick() {
-        window.location = '/design';
+    handleEditButtonClick(id) {
+        window.location = `/design/${id}`;
     }
 }

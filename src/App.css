@@ -42,7 +42,6 @@
 
 .seatContainer {
     margin: 20px;
-    height: 400px;
     overflow: scroll;
     display: flex;
 }

@@ -22,10 +22,20 @@ export default class SeatDesigner extends React.Component {
         request({
             endpoint: 'getSeatmaps',
         }).then((resData, err) => {
-            this.setState({
+            const newState = {
                 seatmapsLoaded: true,
                 existingSeatmaps: resData,
-            });
+            };
+
+            const preselectedSeatmapId = this.props.match.params.seatmapId;
+            if (preselectedSeatmapId) {
+
+                const preselectedSeatmap = resData.find(sm => sm._id === preselectedSeatmapId);
+                newState.seatmapName = preselectedSeatmap.name;
+                newState.seats = preselectedSeatmap.seats;
+            }
+
+            this.setState(newState);
         });
     }
 

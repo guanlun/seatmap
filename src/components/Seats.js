@@ -15,6 +15,7 @@ export default class Seats extends React.Component {
 
         this.state = {
             selectedSeatmap: undefined,
+            seatAreaHeight: 400,
             seatmaps: [],
             nameFilter: '',
             highlightedType: undefined,
@@ -64,7 +65,7 @@ export default class Seats extends React.Component {
 
     render() {
         const { seats, students, selectedSeat, onSeatSelect, onChartAreaSelect } = this.props;
-        const { seatmaps, selectedSeatmap, nameFilter, highlightedType, highlightedCategory, highlightColor } = this.state;
+        const { seatmaps, selectedSeatmap, nameFilter, highlightedType, highlightedCategory, highlightColor, seatAreaHeight } = this.state;
 
         return (
             <div className='classroom'>
@@ -88,7 +89,7 @@ export default class Seats extends React.Component {
                 </div>
                 {selectedSeatmap ?
                     <div>
-                        <div className='seatContainer'>
+                        <div className='seatContainer' style={{ height: seatAreaHeight }}>
                             {selectedSeatmap.seats.map(seat =>
                                 <Seat
                                     key={seat.id}
@@ -133,6 +134,7 @@ export default class Seats extends React.Component {
     handleSeatmapSelect(seatmap) {
         this.setState({
             selectedSeatmap: seatmap,
+            seatAreaHeight: Math.max(...seatmap.seats.map(s => s.y)) + 50,
         });
     }
 
