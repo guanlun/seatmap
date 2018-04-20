@@ -53,7 +53,7 @@ MongoClient.connect('mongodb://localhost:27017/', (err, client) => {
 })
 
 app.use((req, res, next) => {
-    const origin = (env.ENV === 'prod') ? 'http://localhost' : 'http://localhost:3000';
+    const origin = (env.ENV === 'prod') ? 'http://18.218.172.215' : 'http://localhost:3000';
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Credentials', true);
 
