@@ -1,3 +1,4 @@
+const env = require('../src/env');
 const express = require('express');
 const WebSocket = require('ws');
 const mongo = require('mongodb');
@@ -52,7 +53,8 @@ MongoClient.connect('mongodb://localhost:27017/', (err, client) => {
 })
 
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    const origin = (env.ENV === 'prod') ? 'http://localhost' : 'http://localhost:3000';
+    res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Credentials', true);
 
     next();

@@ -1,9 +1,10 @@
-const SERVER_ADDR = 'http://localhost:3001';
+import { SERVER_HOST } from '../config';
+const API_ADDR = `http://${SERVER_HOST}:3001`;
 
 export function request({ endpoint, method = 'GET', payload = {} }) {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        xhr.open(method, `${SERVER_ADDR}/${endpoint}`, true);
+        xhr.open(method, `${API_ADDR}/${endpoint}`, true);
         xhr.withCredentials = true;
         xhr.onreadystatechange = () => {
             if (xhr.readyState == 4) {

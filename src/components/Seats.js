@@ -4,10 +4,10 @@ import StudentDetail from './StudentDetail';
 import StudentInfoCharts from './StudentInfoCharts';
 import SeatmapPreview from './SeatmapPreview';
 import FaSearch from 'react-icons/lib/fa/search';
-import { SERVER_IP } from '../config';
+import { SERVER_HOST } from '../config';
 import { request } from './Utils';
 
-const wsAddr = `ws://${SERVER_IP}:3002`;
+const wsAddr = `ws://${SERVER_HOST}:3002`;
 
 export default class Seats extends React.Component {
     constructor() {
