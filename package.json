@@ -2,6 +2,7 @@
   "name": "seatmap",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "body-parser": "^1.18.2",
     "chart.js": "^2.7.2",
@@ -31,7 +32,9 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "server": "nodemon server/index.js",
-    "prod-env": "echo 'module.exports = { ENV: \"prod\" };' > ./src/env.js"
+    "prod-env": "echo 'module.exports = { ENV: \"prod\" };' > ./src/env.js",
+    "deploy-prod": "sudo cp -r ~/seatmap/build/* /var/www/html/seatmap/",
+    "build-prod": "npm run prod-env; npm run build; npm run deploy-prod"
   },
   "devDependencies": {
     "nodemon": "^1.17.1",
