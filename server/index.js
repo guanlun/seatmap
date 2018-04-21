@@ -301,6 +301,7 @@ app.get('/beginMockingStudents', (req, res) => {
     console.log('connected!!!');
 
     mockStudentIndex = 0;
+    clearInterval(studentGeneratorInterval);
 
     studentGeneratorInterval = setInterval(() => mockStudentLogin(webSocket), 500);
 
@@ -312,6 +313,9 @@ app.get('/beginMockingStudents', (req, res) => {
 app.listen(3001, () => console.log('Listening on port 3001!'));
 
 ws.on('connection', socket => {
+    if (webSocket) {
+        webSocket.close();
+    }
     webSocket = socket;
 
     webSocket.on('close', () => {

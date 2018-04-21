@@ -47,7 +47,7 @@ export default class StudentInfoCharts extends React.Component {
 
         const chartColors = shuffle(colors);
 
-        const backgroundColor = chartColors.map(c => `rgba(${c.join(',')},0.2)`);
+        const backgroundColor = chartColors.map(c => `rgb(${c.join(',')})`);
         const borderColor = chartColors.map(c => `rgb(${c.join(',')})`);
 
         const ctx = canvas.getContext('2d');

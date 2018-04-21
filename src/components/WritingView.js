@@ -65,19 +65,17 @@ export default class WritingView extends React.Component {
     }
 
     componentDidMount() {
-        const highlightedTexts = document.querySelectorAll('.writing-body > span > mark');
-
-        for (const word of highlightedTexts) {
-            word.addEventListener('click', this.wordClickListener.bind(this));
-        }
-
         document.addEventListener('click', this.documentClickListener.bind(this));
     }
 
     documentClickListener(evt) {
-        this.setState({
-            showCommonKeywords: false,
-        })
+        if (evt.target.tagName === 'MARK') {
+            this.wordClickListener(evt)
+        } else {
+            this.setState({
+                showCommonKeywords: false,
+            });
+        }
     }
 
     wordClickListener(evt) {
