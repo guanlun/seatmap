@@ -91,7 +91,8 @@ function randArrayOfValues(length, values) {
 function generateRandomStudentPerformance() {
     return {
         attendance: randArrayOfValues(10, [true, false]),
-    }
+        grades: randArrayOfValues(15, [1, 2, 3, 4]),
+    };
 }
 
 function randomItem(arr) {
@@ -135,4 +136,5 @@ MongoClient.connect('mongodb://localhost:27017/', (err, client) => {
     const studentCollection = db.collection('students');
     studentCollection.remove({});
     studentCollection.insertMany(students);
+    console.log('inserted!')
 })

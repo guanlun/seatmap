@@ -6,7 +6,7 @@ const PerformanceView = ({ studentPerformance }) => {
     return (
         <div className='performance-view'>
             <AttendanceView attendance={studentPerformance.attendance} />
-            <HomeworkView />
+            <HomeworkView grades={studentPerformance.grades} />
         </div>
     );
 };

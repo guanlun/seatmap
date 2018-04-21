@@ -3,13 +3,14 @@
 }
 
 .title-container {
-    padding: 30px;
+    padding: 10px 30px;
     display: flex;
+    background: #0375b4;
+    color: white;
 }
 
 .page-title {
     font-size: 32px;
-    font-weight: bold;
 }
 
 .name-filter-container {
@@ -42,7 +43,7 @@
 }
 
 .seatContainer {
-    padding: 20px;
+    padding: 30px;
     overflow: scroll;
     display: flex;
     background-color: #cef;
@@ -295,4 +296,8 @@
 
 .no-common-keywords-container {
     padding: 10px;
+}
+
+.homework-grade-container {
+    height: 240px;
 }

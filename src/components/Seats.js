@@ -26,7 +26,7 @@ export default class Seats extends React.Component {
 
     componentDidMount() {
         this.fetchSeats();
-        // this.fetchStudentList();
+        this.fetchStudentList();
 
         const wsConn = new WebSocket(wsAddr);
         wsConn.onopen = () => {
@@ -35,7 +35,8 @@ export default class Seats extends React.Component {
 
         wsConn.onmessage = msg => {
             const studentInfo = JSON.parse(msg.data);
-            this.props.onStudentAdd(studentInfo);
+            // this.props.onStudentAdd(studentInfo);
+            console.log(studentInfo)
         }
 
         // TODO: delete:
@@ -55,22 +56,23 @@ export default class Seats extends React.Component {
     }
 
     fetchStudentList() {
-        // fetch('http://localhost:3001/students')
-        //     .then(res => res.text())
-        //     .then(body => {
-        //         const studentData = JSON.parse(body);
-        //         this.props.onStudentDataFetch(studentData);
-        //     });
+        request({
+            endpoint: 'students',
+        }).then(students => {
+            this.setState({
+                students,
+            });
+        });
     }
 
     render() {
-        const { seats, students, selectedSeat, onSeatSelect, onChartAreaSelect } = this.props;
-        const { seatmaps, selectedSeatmap, nameFilter, highlightedType, highlightedCategory, highlightColor, seatAreaHeight } = this.state;
+        const { seats, selectedSeat, onSeatSelect, onChartAreaSelect } = this.props;
+        const { students, seatmaps, selectedSeatmap, nameFilter, highlightedType, highlightedCategory, highlightColor, seatAreaHeight } = this.state;
 
         return (
             <div className='classroom'>
                 <div className='title-container'>
-                    <div className='page-title'>CLASSROOM SEAT MAP</div>
+                    <div className='page-title'>Classroom Seat Map</div>
                     <div className='name-filter-container'>
                         <FaSearch size={20} />
                         <input
