@@ -5,15 +5,15 @@ function lowerCaseStartsWith(text, segment) {
     return text.toLowerCase().indexOf(segment.toLowerCase()) === 0;
 }
 
-const Seat = ({ seatSpec, seatedStudent, isSelected, onSelect, nameFilter, highlightedType, highlightedCategory, highlightColor }) => {
+const Seat = ({ seatSpec, minSeatPos, seatedStudent, isSelected, onSelect, nameFilter, highlightedType, highlightedCategory, highlightColor }) => {
     const classNames = ['seat'];
     if (isSelected) {
         classNames.push('selected');
     }
 
     const elStyle = {
-        left: seatSpec.x,
-        top: seatSpec.y,
+        left: seatSpec.x - minSeatPos.x + 20,
+        top: seatSpec.y - minSeatPos.y + 20,
         transform: `rotate(${seatSpec.rotation}deg)`,
     };
 

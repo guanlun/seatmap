@@ -7,10 +7,11 @@
     display: flex;
     background: #0375b4;
     color: white;
+    align-items: center;
 }
 
 .page-title {
-    font-size: 32px;
+    font-size: 24px;
 }
 
 .name-filter-container {
@@ -40,6 +41,11 @@
 
 .name-filter-input:focus {
     box-shadow: 0px 0px 2px rgb(0, 153, 255);
+}
+
+.seat-outer {
+    position: relative;
+    height: 100%;
 }
 
 .seatContainer {
@@ -96,15 +102,17 @@
     position: absolute;
     top: 0;
     right: 0;
-    width: 400px;
-    height: 100%;
+    width: 450px;
+    min-height: 100%;
     background: #eee;
     padding: 30px;
+    box-shadow: 0 0 6px #666;
     transition: transform 0.2s;
+    box-sizing: border-box;
 }
 
 .student-detail.hidden {
-    /* transform: translateX(400px); */
+    transform: translateX(450px);
 }
 
 .student-detail-header {
@@ -114,6 +122,10 @@
 
 .student-detail-header.selectable {
     cursor: pointer;
+}
+
+.student-detail-header.selectable:hover {
+    color: rgb(102, 162, 248);
 }
 
 .student-detail-header > svg {

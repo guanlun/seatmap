@@ -36,7 +36,6 @@ export default class Seats extends React.Component {
         wsConn.onmessage = msg => {
             const studentInfo = JSON.parse(msg.data);
             // this.props.onStudentAdd(studentInfo);
-            console.log(studentInfo)
         }
 
         // TODO: delete:
@@ -69,6 +68,15 @@ export default class Seats extends React.Component {
         const { seats, selectedSeat, onSeatSelect, onChartAreaSelect } = this.props;
         const { students, seatmaps, selectedSeatmap, nameFilter, highlightedType, highlightedCategory, highlightColor, seatAreaHeight } = this.state;
 
+        const minSeatPos = {
+            x: 0,
+            y: 0,
+        };
+        if (selectedSeatmap) {
+            minSeatPos.x = Math.min(...selectedSeatmap.seats.map(s => s.x));
+            minSeatPos.y = Math.min(...selectedSeatmap.seats.map(s => s.y));
+        }
+
         return (
             <div className='classroom'>
                 <div className='title-container'>
@@ -81,6 +89,7 @@ export default class Seats extends React.Component {
                             className='name-filter-input'
                             placeholder='Filter students by name'
                             onChange={this.handleNameFilterChange.bind(this)}
+                            onFocus={this.handleNameFilterFocus.bind(this)}
                             onBlur={this.handleNameFilterBlur.bind(this)} />
                     </div>
                     <button
@@ -90,7 +99,7 @@ export default class Seats extends React.Component {
                     </button>
                 </div>
                 {selectedSeatmap ?
-                    <div>
+                    <div className='seat-outer'>
                         <div className='seatContainer' style={{ height: seatAreaHeight }}>
                             {selectedSeatmap.seats.map(seat =>
                                 <Seat
@@ -101,6 +110,7 @@ export default class Seats extends React.Component {
                                     highlightedCategory={highlightedCategory}
                                     highlightColor={highlightColor}
                                     seatSpec={seat}
+                                    minSeatPos={minSeatPos}
                                     seatedStudent={this._getStudentBySeat(students, seat.id)}
                                     onSelect={onSeatSelect}/>
                             )}
@@ -110,7 +120,10 @@ export default class Seats extends React.Component {
                             students={students}
                             onWritingCategorySelect={this.handleWritingCategorySelect.bind(this)}
                             onCommonWordSelect={this.handleCommonWordSelect.bind(this)} />
-                        <StudentInfoCharts students={students} onAreaSelect={this.handleChartAreaSelect.bind(this)} />
+                        <StudentInfoCharts
+                            students={students}
+                            onAreaSelect={this.handleChartAreaSelect.bind(this)}
+                            onAreaDeselect={this.handleChartAreaDeselect.bind(this)} />
                     </div>
                     :
                     <div className='seatmap-preview-container'>
@@ -156,11 +169,23 @@ export default class Seats extends React.Component {
         })
     }
 
+    handleChartAreaDeselect() {
+        this.setState({
+            highlightedType: null,
+            highlightedCategory: null,
+        })
+    }
+
     handleNameFilterChange() {
         this.setState({
             nameFilter: this.refs.nameFilterInput.value,
             highlightColor: 'rgb(74, 182, 255)',
         });
+    }
+
+    handleNameFilterFocus() {
+        const { onSeatSelect } = this.props;
+        onSeatSelect(null);
     }
 
     handleNameFilterBlur() {

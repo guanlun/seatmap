@@ -108,11 +108,13 @@ export default class WritingView extends React.Component {
             }
         }
 
-        this.setState({
-            showCommonKeywords: true,
-            commonKeywordsContainerPosition: baseOffset,
-            contextTexts,
-        });
+        if (contextTexts.length > 0) {
+            this.setState({
+                showCommonKeywords: true,
+                commonKeywordsContainerPosition: baseOffset,
+                contextTexts,
+            });
+        }
     }
 
     render() {
@@ -124,50 +126,52 @@ export default class WritingView extends React.Component {
                 <hr />
                 <div
                     className='student-detail-header selectable'
-                    onClick={() => onCategorySelect(CHART_TYPE.TOPIC, writingSpec.topic)}>
+                    onMouseOver={() => onCategorySelect(CHART_TYPE.TOPIC, writingSpec.topic)}
+                    onMouseLeave={() => onCategorySelect(CHART_TYPE.TOPIC, null)} >
                     <FaCommentingO size={32} />
                     <span>{writingSpec.topic}</span>
                 </div>
                 <div
                     className='student-detail-header selectable'
-                    onClick={() => onCategorySelect(CHART_TYPE.CONTEXT, writingSpec.context)}>
+                    onMouseOver={() => onCategorySelect(CHART_TYPE.CONTEXT, writingSpec.context)}
+                    onMouseLeave={() => onCategorySelect(CHART_TYPE.CONTEXT, null)} >
                     <FaBuildingO size={32} />
                     <span>{writingSpec.context}</span>
                 </div>
                 <div className='attendance-view student-detail-header'>
                     <FaFileTextO size={32} />
                     <span>Writing:</span>
-                    <div className='writing-body' ref='writingBody'>
-                        <Highlighter
-                            highlightClassName='highlighted-keyword'
-                            searchWords={writingSpec.keywords}
-                            textToHighlight={writingSpec.writing}
-                            caseSensitive={true} />
-                        {showCommonKeywords ?
-                            <div
-                                className='common-keyword-container'
-                                style={{ left: commonKeywordsContainerPosition.x, top: commonKeywordsContainerPosition.y}}>
-                                {contextTexts.length === 0 ?
-                                    <div className="no-common-keywords-container">No common keywords</div> :
-                                    <div className='common-keyword-list'>
-                                        {contextTexts.map((ct, idx) =>
-                                            <div
-                                                className='context-word-item'
-                                                key={`context-word-item-${idx}`}
-                                                onClick={() => this.handleCommonWordItemClick(ct.student)} >
-                                                <div>{ct.student.name}</div>
-                                                <Highlighter
-                                                    highlightClassName='highlighted-keyword'
-                                                    searchWords={[ct.word]}
-                                                    textToHighlight={ct.context} />
-                                            </div>
-                                        )}
-                                    </div>
-                                }
-                            </div>
-                            : null
-                        }
-                    </div>
+                </div>
+                <div className='writing-body' ref='writingBody'>
+                    <Highlighter
+                        highlightClassName='highlighted-keyword'
+                        searchWords={writingSpec.keywords}
+                        textToHighlight={writingSpec.writing}
+                        caseSensitive={true} />
+                    {showCommonKeywords ?
+                        <div
+                            className='common-keyword-container'
+                            style={{ left: commonKeywordsContainerPosition.x, top: commonKeywordsContainerPosition.y}}>
+                            {contextTexts.length === 0 ?
+                                <div className="no-common-keywords-container">No common keywords</div> :
+                                <div className='common-keyword-list'>
+                                    {contextTexts.map((ct, idx) =>
+                                        <div
+                                            className='context-word-item'
+                                            key={`context-word-item-${idx}`}
+                                            onClick={() => this.handleCommonWordItemClick(ct.student)} >
+                                            <div>{ct.student.name}</div>
+                                            <Highlighter
+                                                highlightClassName='highlighted-keyword'
+                                                searchWords={[ct.word]}
+                                                textToHighlight={ct.context} />
+                                        </div>
+                                    )}
+                                </div>
+                            }
+                        </div>
+                        : null
+                    }
                 </div>
             </div>
         );

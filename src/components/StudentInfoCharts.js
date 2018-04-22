@@ -40,6 +40,15 @@ export default class StudentInfoCharts extends React.Component {
     componentDidMount() {
         this.topicChart = this.createPieChart(CHART_TYPE.TOPIC, this.refs.topicDataCanvas);
         this.contextChart = this.createPieChart(CHART_TYPE.CONTEXT, this.refs.contextDataCanvas);
+
+        this.refreshCharts(this.props.students);
+
+        const { onAreaDeselect } = this.props;
+        document.onclick = evt => {
+            if (evt.target !== this.refs.topicDataCanvas && evt.target !== this.refs.contextDataCanvas) {
+                onAreaDeselect();
+            }
+        }
     }
 
     createPieChart(chartType, canvas) {
@@ -95,11 +104,15 @@ export default class StudentInfoCharts extends React.Component {
         chart.update();
     }
 
-    componentWillReceiveProps(nextProps) {
-        const topicDataSet = aggregateCount(nextProps.students.map(s => s.homeworks[s.homeworks.length - 1].topic));
-        const contextDataSet = aggregateCount(nextProps.students.map(s => s.homeworks[s.homeworks.length - 1].context));
+    refreshCharts(students) {
+        const topicDataSet = aggregateCount(students.map(s => s.homeworks[s.homeworks.length - 1].topic));
+        const contextDataSet = aggregateCount(students.map(s => s.homeworks[s.homeworks.length - 1].context));
         this.updateChart(this.topicChart, topicDataSet);
         this.updateChart(this.contextChart, contextDataSet);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.refreshCharts(nextProps.students);
     }
 
     render() {
