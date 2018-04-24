@@ -14,6 +14,7 @@ export default class Seats extends React.Component {
         super();
 
         this.state = {
+            students: [],
             selectedSeatmap: undefined,
             seatAreaHeight: 400,
             seatmaps: [],
@@ -35,11 +36,14 @@ export default class Seats extends React.Component {
 
         wsConn.onmessage = msg => {
             const studentInfo = JSON.parse(msg.data);
+            this.setState({
+                students: [...this.state.students, studentInfo],
+            });
             // this.props.onStudentAdd(studentInfo);
         }
 
         // TODO: delete:
-        this.handleMockStudentButtonClick();
+        // this.handleMockStudentButtonClick();
     }
 
     fetchSeats() {

@@ -73,7 +73,7 @@
 }
 
 .seat.empty {
-    background-color: #eee;
+    background-color: #eee !important;
     border: none;
 }
 
@@ -95,6 +95,7 @@
 } */
 
 .seat.selected {
+    color: white;
     background: rgb(102, 162, 248);
 }
 
@@ -171,7 +172,23 @@
 }
 
 .mock-start-button {
+    position: fixed;
+    right: 0;
     margin-left: 60px;
+    padding-left: 30px;
+    height: 30px;
+    background: black;
+    opacity: 0.4;
+    color: white;
+    font-size: 20px;
+    border: 0;
+    transform: translateX(140px);
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.mock-start-button:hover {
+    transform: translateX(0);
 }
 
 .seatmap-preview-list {

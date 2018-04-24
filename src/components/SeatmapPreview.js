@@ -37,6 +37,6 @@ export default class SeatmapPreview extends React.Component {
     }
 
     handleEditButtonClick(id) {
-        window.location = `/#/design/${id}`;
+        window.location = `#/design/${id}`;
     }
 }
