@@ -11,7 +11,7 @@
     "express": "^4.16.2",
     "keyword-extractor": "0.0.15",
     "lorem-ipsum": "^1.0.4",
-    "mongodb": "^3.0.3",
+    "mongodb": "^3.1.13",
     "node-fetch": "^2.0.0",
     "react": "^16.2.0",
     "react-addons-update": "^15.6.2",
