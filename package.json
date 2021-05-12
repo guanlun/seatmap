@@ -5,7 +5,7 @@
   "homepage": ".",
   "dependencies": {
     "body-parser": "^1.18.2",
-    "chart.js": "^2.7.2",
+    "chart.js": "^2.9.4",
     "cookie-parser": "^1.4.3",
     "d3": "^4.13.0",
     "express": "^4.16.2",
