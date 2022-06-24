@@ -12,7 +12,7 @@
     "keyword-extractor": "0.0.15",
     "lorem-ipsum": "^1.0.4",
     "mongodb": "^3.0.3",
-    "node-fetch": "^2.0.0",
+    "node-fetch": "^2.6.7",
     "react": "^16.2.0",
     "react-addons-update": "^15.6.2",
     "react-dom": "^16.2.0",
